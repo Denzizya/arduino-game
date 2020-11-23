@@ -133,7 +133,7 @@ void ShowTimeEfect()
 {
   lcd.clear();
   lcd.setCursor(2, 0);
-  lcd.print(F("Time efect:"));
+  lcd.print(F("Time effect:"));
   cursorOneStr = 7;
   lcd.setCursor(cursorOneStr, 1);
   lcd.print(F("00"));
@@ -169,10 +169,10 @@ void ShowSensitivityEfect()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print(F("IncorrectToogle:"));
+  lcd.print(F("TIME ( sec ) :"));
   cursorOneStr = 0;
   lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("   time   =   00"));
+  lcd.print(F("      =    00"));
   lcd.setCursor(cursorOneStr, 1);
 }
 
@@ -186,8 +186,18 @@ void ShowPoint()
   lcd.print(F("* no       # yes"));
 }
 
+//Сохраненные настройки
+void ShowSave()
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Play again?  --*"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("New game.    --#"));
+}
+
 //Выбор параметров блютуз
-ShowPointMenu()
+void ShowPointMenu()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -197,7 +207,7 @@ ShowPointMenu()
 }
 
 //Ожидания старта
-ShowAnyPress()
+void ShowAnyPress()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -215,6 +225,8 @@ void SetupBombTime()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -271,6 +283,8 @@ void SetupPassword()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if ((key != '*') && (key != '#'))
   {
     if (stringLength < 8)
@@ -314,6 +328,8 @@ void SetupIncorrectPassword()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if ((key != '*') && (key != '#'))
   {
     if (stringLength < 2)
@@ -347,6 +363,8 @@ void SetupAttempts()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -392,6 +410,7 @@ void SetupCorrectToggle()
       setupGame[globalState] = i;
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(setupGame[globalState]);
+      rele();
     }
   }
   char key = keypad.getKey();
@@ -399,6 +418,7 @@ void SetupCorrectToggle()
   {
     ++globalState;
     ShowIncorrectToogle();
+    rele();
   }
 }
 
@@ -410,6 +430,8 @@ void SetupIncorrectToogle()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -445,6 +467,7 @@ void SetupStopToogle()
       setupGame[globalState] = i;
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(setupGame[globalState]);
+      rele();
     }
   }
   char key = keypad.getKey();
@@ -452,6 +475,7 @@ void SetupStopToogle()
   {
     ++globalState;
     ShowStopTime();
+    rele();
   }
 }
 
@@ -463,6 +487,8 @@ void SetupStopTime()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -508,6 +534,7 @@ void SetupSlomoToogle()
       setupGame[globalState] = i;
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(setupGame[globalState]);
+      rele();
     }
   }
   char key = keypad.getKey();
@@ -515,6 +542,7 @@ void SetupSlomoToogle()
   {
     ++globalState;
     ShowSlomoTime();
+    rele();
   }
 }
 
@@ -526,6 +554,8 @@ void SetupSlomoTime()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -561,6 +591,8 @@ void SetupTimeEfect()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if ((key != '*') && (key != '#'))
   {
     if (stringLength < 2)
@@ -594,6 +626,8 @@ void SetupSensitivity()
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
+
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -636,6 +670,8 @@ void SetupSensitivityTime()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if ((key != '*') && (key != '#'))
   {
     if (stringLength < 2)
@@ -670,6 +706,8 @@ void SetupSensitivityEfect()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if ((key != '*') && (key != '#'))
   {
     if (stringLength < 2)
@@ -686,7 +724,7 @@ void SetupSensitivityEfect()
     setupGame[globalState] = 0;
     stringLength = 0;
     lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("    time   =   00"));
+    lcd.print(F("      =    00"));
   }
   if (key == '#')
   {
@@ -702,10 +740,12 @@ void SetupPoint()
   if (key == NO_KEY)
     return;
 
+  rele();
+
   if (key == '*')
   {
     setupGame[globalState] = 0;
-    globalState += 2;
+    globalState += 3;
     ShowAnyPress();
   }
   if (key == '#')
@@ -717,37 +757,68 @@ void SetupPoint()
 }
 
 //Выбор параметров блютуз
-SetupPointMenu()
+void SetupPointMenu()
 {
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
 
-  if (key == '*')
-  {
-    setupGame[globalState] = 0;
-    ++globalState;
-    ShowAnyPress();
-  }
+  rele();
+
   if (key == '#')
   {
+    setupGame[globalState] = 0;
+    globalState += 2;
+    ShowAnyPress();
+  }
+  if (key == '*')
+  {
     setupGame[globalState] = 1;
+    globalState += 2;
+    ShowAnyPress();
+  }
+}
+
+//Запрос восстановление данных
+void SetupSave()
+{
+  char key = keypad.getKey();
+  if (key == NO_KEY)
+    return;
+
+  rele();
+
+  if (key == '#')
+  {
+    setupGame[globalState] = 0;
+    globalState = 0;
+    showTextBombTime();
+    EEPROM.write(0, 255);
+  }
+  if (key == '*')
+  {
     ++globalState;
     ShowAnyPress();
   }
 }
 
 //Ожидания старта
-SetupAnyPress()
+void SetupAnyPress()
 {
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
 
+  rele();
+
+  for (uint8_t i = 0; i < adress; ++i) {
+    EEPROM.write(i, setupGame[i]);
+    delay(4);
+  }
   ++globalState;
 }
 
-StartGame()
+void StartGame()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -774,254 +845,3 @@ StartGame()
   Serial.println(setupGame[17]);
   ++globalState;
 }
-
-/*
-  if (buttonClick(BUTTON_PLUS, frequency_button))
-  {
-    ++setupGame[0];
-    if (setupGame[0] == 10)
-      frequency_button -= 8;
-    if (setupGame[0] == 100)
-      frequency_button -= 5;
-  }
-  else if (setupGame[0] > 0)
-  {
-    if (buttonClick(BUTTON_MINUS, frequency_button))
-    {
-      --setupGame[0];
-      if (setupGame[0] == 9 || setupGame[0] == 99)
-      {
-
-        if (setupGame[0] == 9)
-          frequency_button += 8;
-        if (setupGame[0] == 99)
-          frequency_button += 5;
-
-        lcd.print("                ");
-      }
-    }
-    if (buttonClick(BUTTON_OK, frequency_button, true)) // true - параметр удержания
-    {
-      ++globalState;
-    }
-  }
-  /*
-    if (digitalRead(BUTTON_PLUS) == HIGH && digitalRead(BUTTON_MINUS) == HIGH && digitalRead(BUTTON_OK) == HIGH)
-    {
-      if (millis() > setupTimeLastMillis)
-      {
-        lcd.print(setupGame[0]);
-        if (millis() > (setupTimeLastMillis + 500))
-        {
-          setupTimeLastMillis = millis() + 500;
-        }
-      }
-      else
-      {
-        lcd.print(F("                "));
-      }
-    }
-    else
-    {
-      lcd.print(setupGame[0]);
-    }
-
-  }
-
-  //Кнопка деактивации
-  void Password()
-  {
-  if (!globalStateButton)
-  {
-    lcd.clear();
-    lcd.setCursor(3, 0);
-    lcd.print("Password:");
-    lcd.setCursor(5, 1);
-    lcd.print(setupGame[1]);
-  }
-  else
-  {
-    lcd.setCursor(5, 1);
-    if (buttonClick(BUTTON_PLUS, frequency_button))
-    {
-      ++setupGame[1];
-      if (setupGame[1] == 10)
-        frequency_button -= 8;
-      if (setupGame[1] == 100)
-        frequency_button -= 5;
-    }
-    else if (setupGame[1] > 0)
-    {
-      if (buttonClick(BUTTON_MINUS, frequency_button))
-      {
-        --setupGame[1];
-        if (setupGame[1] == 9 || setupGame[1] == 99)
-        {
-
-          if (setupGame[1] == 9)
-            frequency_button += 8;
-          if (setupGame[1] == 99)
-            frequency_button += 5;
-
-          lcd.print("                ");
-        }
-      }
-      if (buttonClick(BUTTON_OK, frequency_button, true)) // true - параметр удержания
-      {
-        ++globalState;
-      }
-    }
-
-    if (digitalRead(BUTTON_PLUS) == HIGH && digitalRead(BUTTON_MINUS) == HIGH && digitalRead(BUTTON_OK) == HIGH)
-    {
-      if (millis() > setupTimeLastMillis)
-      {
-        lcd.print(setupGame[1]);
-        if (millis() > (setupTimeLastMillis + 500))
-        {
-          setupTimeLastMillis = millis() + 500;
-        }
-      }
-      else
-      {
-        lcd.print(F("                "));
-      }
-    }
-    else
-    {
-      lcd.print(setupGame[1]);
-    }
-  }
-  }
-  /*
-  void IncorrectPassword()
-  {
-  if (!globalStateButton)
-  {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Incorrect Pass:");
-    lcd.setCursor(5, 1);
-    lcd.print(setupGame[2]);
-  }
-  else
-  {
-    lcd.setCursor(5, 1);
-    if (buttonClick(BUTTON_PLUS, frequency_button))
-    {
-      ++setupGame[2];
-      if (setupGame[2] == 10)
-        frequency_button -= 8;
-      if (setupGame[2] == 100)
-        frequency_button -= 5;
-    }
-    else if (setupGame[2] > 0)
-    {
-      if (buttonClick(BUTTON_MINUS, frequency_button))
-      {
-        --setupGame[2];
-        if (setupGame[2] == 9 || setupGame[2] == 99)
-        {
-
-          if (setupGame[2] == 9)
-            frequency_button += 8;
-          if (setupGame[2] == 99)
-            frequency_button += 5;
-
-          lcd.print("                ");
-        }
-      }
-      if (buttonClick(BUTTON_OK, frequency_button, true)) // true - параметр удержания
-      {
-        ++globalState;
-      }
-    }
-
-    if (digitalRead(BUTTON_PLUS) == HIGH && digitalRead(BUTTON_MINUS) == HIGH && digitalRead(BUTTON_OK) == HIGH)
-    {
-      if (millis() > setupTimeLastMillis)
-      {
-        lcd.print(setupGame[2]);
-        if (millis() > (setupTimeLastMillis + 500))
-        {
-          setupTimeLastMillis = millis() + 500;
-        }
-      }
-      else
-      {
-        lcd.print(F("                "));
-      }
-    }
-    else
-    {
-      lcd.print(setupGame[2]);
-    }
-  }
-  }
-  /*
-  void Attempts()
-  {
-  if (!globalStateButton)
-  {
-    lcd.clear();
-    lcd.setCursor(3, 0);
-    lcd.print("Attemps:");
-    lcd.setCursor(5, 1);
-    lcd.print(setupGame[2]);
-  }
-  else
-  {
-    lcd.setCursor(5, 1);
-    if (buttonClick(BUTTON_PLUS, frequency_button))
-    {
-      ++setupGame[2];
-      if (setupGame[2] == 10)
-        frequency_button -= 8;
-      if (setupGame[2] == 100)
-        frequency_button -= 5;
-    }
-    else if (setupGame[2] > 0)
-    {
-      if (buttonClick(BUTTON_MINUS, frequency_button))
-      {
-        --setupGame[2];
-        if (setupGame[2] == 9 || setupGame[2] == 99)
-        {
-
-          if (setupGame[2] == 9)
-            frequency_button += 8;
-          if (setupGame[2] == 99)
-            frequency_button += 5;
-
-          lcd.print("                ");
-        }
-      }
-      if (buttonClick(BUTTON_OK, frequency_button, true)) // true - параметр удержания
-      {
-        ++globalState;
-      }
-    }
-
-    if (digitalRead(BUTTON_PLUS) == HIGH && digitalRead(BUTTON_MINUS) == HIGH && digitalRead(BUTTON_OK) == HIGH)
-    {
-      if (millis() > setupTimeLastMillis)
-      {
-        lcd.print(setupGame[2]);
-        if (millis() > (setupTimeLastMillis + 500))
-        {
-          setupTimeLastMillis = millis() + 500;
-        }
-      }
-      else
-      {
-        lcd.print(F("                "));
-      }
-    }
-    else
-    {
-      lcd.print(setupGame[2]);
-    }
-  }
-
-  }
-*/

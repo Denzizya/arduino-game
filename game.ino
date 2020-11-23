@@ -19,10 +19,25 @@ void setup() {
     wires[i].SetPin(WIRE_PINS[i]);
   }
 
+  //Реле
+  pinMode(RELAY_PINS, OUTPUT);
+  digitalWrite(RELAY_PINS, OFF);
+
   showHello();
   delay(2000);
-  showTextBombTime();
-  //ShowIncorrectToogle();
+  if (EEPROM.read(0) != 255 && EEPROM.read(0) > 0)
+  {
+    for (uint8_t i = 0; i < adress; ++i)
+    {
+      setupGame[i] = EEPROM.read(i);       //Чтение параметров
+    }
+    globalState = 16;
+    ShowSave();    //Меню сохраненные настройки
+  }
+  else
+  {
+    showTextBombTime();   //Меню установки времени игры
+  }
 }
 
 void loop() {
@@ -43,8 +58,9 @@ void loop() {
     case 13: SetupSensitivityEfect(); break;  //Отрезок времени для ускорения.
     case 14: SetupPoint(); break;             //Активация блютуза.
     case 15: SetupPointMenu(); break;         //Выбор параметров блютуз
-    case 16: SetupAnyPress(); break;          //Ожидания старта
-    case 17: StartGame(); break;              //Начало игры
+    case 16: SetupSave(); break;              //Запрос восстановление данных
+    case 17: SetupAnyPress(); break;          //Ожидания старта
+    case 18: StartGame(); break;              //Начало игры
   }
   //if (globalState < 12) ledWave();
 }
