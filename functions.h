@@ -47,6 +47,48 @@ long EEPROMReadlong(long address)
   long two = EEPROM.read(address + 2);
   long one = EEPROM.read(address + 3);
 
-  //Return the recomposed long by using bitshift.
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
+}
+
+void ShowTimerLcd()
+{
+
+  uint8_t timeStringMin = setupGame[0] / 1000 / 60;
+  uint8_t timeStringSec;
+  String view = String(timeStringMin);
+  lcd.setCursor(cursorZeroStr, 0);
+  lcd.print(view);
+
+}
+
+void timerGame()
+{
+  if ((millis() - setupTimeLastMillis) > 1000)
+  {
+    cursorZeroStr = 8;
+    cursorOneStr = 4;
+    lcd.setCursor(cursorOneStr, 1);
+    lcd.print(F("********"));
+    return;
+  }
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Time -> 00:00"));
+  lcd.setCursor(4, 1);
+  lcd.print(F("********"));
+}
+
+String ConstructTimeString(unsigned long secs) {
+  uint8_t hours = secs / 3600;
+  uint8_t minutes = secs / 60 - hours * 60;
+  uint8_t seconds = secs % 60;
+
+  char str[9];
+  sprintf(str, "%02d", hours);
+  sprintf(str + 2, ":%02d", minutes);
+  sprintf(str + 5, ":%02d", seconds);
+  str[8] = 0;
+
+  return String(str);
 }

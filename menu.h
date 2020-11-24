@@ -13,7 +13,7 @@ void showTextBombTime()
   lcd.print(F("Bomb time, min:"));
   cursorOneStr = 5;
   lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("00:00"));
+  lcd.print(F("000:00"));
   lcd.setCursor(cursorOneStr, 1);
 }
 
@@ -215,12 +215,33 @@ void ShowAnyPress()
   lcd.setCursor(0, 1);
   lcd.print(F("button please..."));
 }
+
+//Начинаем игру.
+void ShowTimerGame()
+{
+  lcd.clear();
+  lcd.setCursor(1, 0);
+  lcd.print(F("Time -> 00:00"));
+  cursorZeroStr = 8;
+  cursorOneStr = 4;
+  lcd.setCursor(cursorOneStr, 1);
+  lcd.print(F("********"));
+  setupTimeLastMillis = millis();
+}
 //=================================================================================================================//
 
 //Установить таймер
 void SetupBombTime()
 {
-  static uint8_t stringLength = 0;
+  static char timeStringMin[3];
+  static int timeStringSec = 0;
+  static uint8_t timeStringLength = 0;
+  static uint8_t timeStringLengthSec = 0;
+
+  if (timeStringLength == 3)
+  {
+    ++timeStringLength;
+  }
 
   char key = keypad.getKey();
   if (key == NO_KEY)
@@ -230,48 +251,102 @@ void SetupBombTime()
 
   if ((key != '*') && (key != '#'))
   {
-    if (stringLength < 5)
+    if (timeStringLength < 3)
     {
-      if (stringLength == 0)
-      {
-        timeStringHour += (key - 48) * 10;
-      }
-      if (stringLength == 1)
-      {
-        timeStringHour += (key - 48);
-      }
-      if (stringLength == 2)
-      {
-        ++stringLength;
-      }
-      if (stringLength == 3)
-      {
-        timeStringMin += (key - 48) * 10;
-      }
-      if (stringLength == 4)
-      {
-        timeStringMin += (key - 48);
-      }
-      lcd.setCursor(stringLength + cursorOneStr, 1);
+      timeStringMin[timeStringLength] = key;
+      lcd.setCursor(timeStringLength + cursorOneStr, 1);
       lcd.print(key);
-      ++stringLength;
+      ++timeStringLength;
+    }
+    else if (timeStringLength > 3 && timeStringLength < 6)
+    {
+      if (timeStringLengthSec == 0)
+      {
+        timeStringSec += (key - 48) * 10;
+      }
+      else
+      {
+        timeStringSec += (key - 48);
+      }
+      lcd.setCursor(timeStringLength + cursorOneStr, 1);
+      lcd.print(key);
+      ++timeStringLength;
+      ++timeStringLengthSec;
     }
   }
-  if (key == '*')
+  else if (key == '*')
   {
-    stringLength = 0;
-    timeStringHour = 0;
-    timeStringMin = 0;
+    timeStringLength = 0;
+    timeStringLengthSec = 0;
+    memset(timeStringMin, 0, sizeof(timeStringMin));
+    memset(timeStringSec, 0, sizeof(timeStringSec));
     lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("00:00"));
+    lcd.print(F("000:00"));
   }
-  if ((key == '#') && ((timeStringHour > 0) || (timeStringMin > 0)))
+  else if ((key == '#') && ((atol(timeStringMin) > 0) || (atol(timeStringSec) > 0)))
   {
-    long gameTimeSec = timeStringHour * 60 + timeStringMin;
-    setupGame[globalState] = gameTimeSec * 1000;
+    long gameTimeSec = (unsigned long)atol(timeStringMin) * 60;
+    setupGame[globalState] = gameTimeSec + timeStringSec;
     ++globalState;
     ShowPassword();
   }
+
+  /*
+    static uint8_t stringLength = 0;
+
+    char key = keypad.getKey();
+    if (key == NO_KEY)
+      return;
+
+    rele();
+
+    if ((key != '*') && (key != '#'))
+    {
+      if (stringLength < 5)
+      {
+        if (stringLength == 0)
+        {
+          timeStringMin += (key - 48) * 10;
+        }
+        if (stringLength == 1)
+        {
+          timeStringMin += (key - 48);
+        }
+        if (stringLength == 2)
+        {
+          ++stringLength;
+        }
+        if (stringLength == 3)
+        {
+          timeStringSec += (key - 48) * 10;
+        }
+        if (stringLength == 4)
+        {
+          timeStringSec += (key - 48);
+        }
+        lcd.setCursor(stringLength + cursorOneStr, 1);
+        lcd.print(key);
+        ++stringLength;
+      }
+    }
+    else if (key == '*')
+    {
+      stringLength = 0;
+      timeStringMin = 0;
+      timeStringSec = 0;
+      lcd.setCursor(cursorOneStr, 1);
+      lcd.print(F("00:00"));
+    }
+    else if ((key == '#') && ((timeStringMin > 0) || (timeStringSec > 0)))
+    {
+      long gameTimeSec = timeStringMin * 60 + timeStringSec;
+      setupGame[globalState] = gameTimeSec;
+      ++globalState;
+
+      ShowPassword();
+
+    }
+  */
 }
 
 //Установка пароля
@@ -790,7 +865,7 @@ void SetupSave()
 
   if (key == '#')
   {
-    setupGame[globalState] = 0;
+    memset(setupGame, 0, sizeof(setupGame));
     globalState = 0;
     showTextBombTime();
     EEPROM.write(0, 255);
@@ -825,32 +900,37 @@ void SetupAnyPress()
     delay(1);
   }
   ++globalState;
+  setupTimeLastMillis = millis();
+  ShowTimerGame();
 }
 
 void StartGame()
 {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("*******************"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("*******************"));
-  Serial.println(setupGame[0]);
-  Serial.println(setupGame[1]);
-  Serial.println(setupGame[2]);
-  Serial.println(setupGame[3]);
-  Serial.println(setupGame[4]);
-  Serial.println(setupGame[5]);
-  Serial.println(setupGame[6]);
-  Serial.println(setupGame[7]);
-  Serial.println(setupGame[8]);
-  Serial.println(setupGame[9]);
-  Serial.println(setupGame[10]);
-  Serial.println(setupGame[11]);
-  Serial.println(setupGame[12]);
-  Serial.println(setupGame[13]);
-  Serial.println(setupGame[14]);
-  Serial.println(setupGame[15]);
-  Serial.println(setupGame[16]);
-  Serial.println(setupGame[17]);
-  ++globalState;
+  timerGame();
+  /*
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("*******************"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("*******************"));
+    Serial.println(setupGame[0]);
+    Serial.println(setupGame[1]);
+    Serial.println(setupGame[2]);
+    Serial.println(setupGame[3]);
+    Serial.println(setupGame[4]);
+    Serial.println(setupGame[5]);
+    Serial.println(setupGame[6]);
+    Serial.println(setupGame[7]);
+    Serial.println(setupGame[8]);
+    Serial.println(setupGame[9]);
+    Serial.println(setupGame[10]);
+    Serial.println(setupGame[11]);
+    Serial.println(setupGame[12]);
+    Serial.println(setupGame[13]);
+    Serial.println(setupGame[14]);
+    Serial.println(setupGame[15]);
+    Serial.println(setupGame[16]);
+    Serial.println(setupGame[17]);
+    ++globalState;
+  */
 }
