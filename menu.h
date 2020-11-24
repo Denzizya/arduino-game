@@ -11,9 +11,9 @@ void showTextBombTime()
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Bomb time, min:"));
-  cursorOneStr = 5;
+  cursorOneStr = 7;
   lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("000:00"));
+  lcd.print(F("000"));
   lcd.setCursor(cursorOneStr, 1);
 }
 
@@ -220,12 +220,14 @@ void ShowAnyPress()
 void ShowTimerGame()
 {
   lcd.clear();
-  lcd.setCursor(1, 0);
-  lcd.print(F("Time -> 00:00"));
+  lcd.setCursor(0, 0);
+  lcd.print(F("Time -> 00:00:00"));
   cursorZeroStr = 8;
+  lcd.setCursor(cursorZeroStr, 0);
+  lcd.print(ConstructTimeString(unsigned long setupGame[0]));
   cursorOneStr = 4;
   lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("********"));
+  lcd.print(F("????????"));
   setupTimeLastMillis = millis();
 }
 //=================================================================================================================//
@@ -234,14 +236,7 @@ void ShowTimerGame()
 void SetupBombTime()
 {
   static char timeStringMin[3];
-  static int timeStringSec = 0;
   static uint8_t timeStringLength = 0;
-  static uint8_t timeStringLengthSec = 0;
-
-  if (timeStringLength == 3)
-  {
-    ++timeStringLength;
-  }
 
   char key = keypad.getKey();
   if (key == NO_KEY)
@@ -257,22 +252,7 @@ void SetupBombTime()
       lcd.setCursor(timeStringLength + cursorOneStr, 1);
       lcd.print(key);
       ++timeStringLength;
-    }
-    else if (timeStringLength > 3 && timeStringLength < 6)
-    {
-      if (timeStringLengthSec == 0)
-      {
-        timeStringSec += (key - 48) * 10;
-      }
-      else
-      {
-        timeStringSec += (key - 48);
-      }
-      lcd.setCursor(timeStringLength + cursorOneStr, 1);
-      lcd.print(key);
-      ++timeStringLength;
-      ++timeStringLengthSec;
-    }
+    }    
   }
   else if (key == '*')
   {
@@ -281,72 +261,15 @@ void SetupBombTime()
     memset(timeStringMin, 0, sizeof(timeStringMin));
     memset(timeStringSec, 0, sizeof(timeStringSec));
     lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("000:00"));
+    lcd.print(F("000"));
   }
   else if ((key == '#') && ((atol(timeStringMin) > 0) || (atol(timeStringSec) > 0)))
   {
     long gameTimeSec = (unsigned long)atol(timeStringMin) * 60;
-    setupGame[globalState] = gameTimeSec + timeStringSec;
+    setupGame[globalState] = gameTimeSec;
     ++globalState;
     ShowPassword();
   }
-
-  /*
-    static uint8_t stringLength = 0;
-
-    char key = keypad.getKey();
-    if (key == NO_KEY)
-      return;
-
-    rele();
-
-    if ((key != '*') && (key != '#'))
-    {
-      if (stringLength < 5)
-      {
-        if (stringLength == 0)
-        {
-          timeStringMin += (key - 48) * 10;
-        }
-        if (stringLength == 1)
-        {
-          timeStringMin += (key - 48);
-        }
-        if (stringLength == 2)
-        {
-          ++stringLength;
-        }
-        if (stringLength == 3)
-        {
-          timeStringSec += (key - 48) * 10;
-        }
-        if (stringLength == 4)
-        {
-          timeStringSec += (key - 48);
-        }
-        lcd.setCursor(stringLength + cursorOneStr, 1);
-        lcd.print(key);
-        ++stringLength;
-      }
-    }
-    else if (key == '*')
-    {
-      stringLength = 0;
-      timeStringMin = 0;
-      timeStringSec = 0;
-      lcd.setCursor(cursorOneStr, 1);
-      lcd.print(F("00:00"));
-    }
-    else if ((key == '#') && ((timeStringMin > 0) || (timeStringSec > 0)))
-    {
-      long gameTimeSec = timeStringMin * 60 + timeStringSec;
-      setupGame[globalState] = gameTimeSec;
-      ++globalState;
-
-      ShowPassword();
-
-    }
-  */
 }
 
 //Установка пароля

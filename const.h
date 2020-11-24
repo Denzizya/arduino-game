@@ -43,10 +43,9 @@ uint8_t frequency_button = 20;  //Скорось нажатия кнопки
 //#define BUZZER_FREQUENCY 200
 
 
-/*** timer ***/
-unsigned long setupTimeLastMillis;
-//unsigned long ledLastMillis;
-//unsigned long ledLastMillis;
+/*** Timer ***/
+unsigned long setupTimeLastMillis;	//Метка времени
+unsigned long speedTime = 1000;		//Скорость таймера
 
 /**********************/
 uint8_t globalState = 0;          //Пункт меню
@@ -57,6 +56,8 @@ uint8_t globalTimer = 0;          //Тайвер установки времен
 
 uint8_t cursorZeroStr = 0;  //Курсор нулевой строки
 uint8_t cursorOneStr = 0;   //Курсор первой строки
+
+
 
 
 

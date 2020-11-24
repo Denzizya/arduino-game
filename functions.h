@@ -63,23 +63,18 @@ void ShowTimerLcd()
 
 void timerGame()
 {
-  if ((millis() - setupTimeLastMillis) > 1000)
+  if(setupGame[0] == 0)
   {
-    cursorZeroStr = 8;
-    cursorOneStr = 4;
-    lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("********"));
-    return;
+	++globalState; // Конец игры
   }
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Time -> 00:00"));
-  lcd.setCursor(4, 1);
-  lcd.print(F("********"));
+  viewZeroString(); //Показываем время таймера
+  readButton();		//Считываем нажатие тумблеров
+  readPassword();	//Ввод пароля
 }
 
-String ConstructTimeString(unsigned long secs) {
+String ConstructTimeString(unsigned long secs) 
+{
   uint8_t hours = secs / 3600;
   uint8_t minutes = secs / 60 - hours * 60;
   uint8_t seconds = secs % 60;
@@ -91,4 +86,90 @@ String ConstructTimeString(unsigned long secs) {
   str[8] = 0;
 
   return String(str);
+}
+
+//===========================================================================================//
+
+//Отображение остчета времени
+bool viewZeroString()
+{
+if ((millis() - setupTimeLastMillis) > speedTime)
+  {
+    lcd.setCursor(cursorZeroStr, 0);
+    lcd.print(ConstructTimeString(unsigned long setupGame[0]));
+    setupTimeLastMillis = millis();
+	--setupGame[0];
+    return true;
+  }
+  return false;
+}
+
+//Чтение тумблеров
+void readButton()
+{
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+    auto &w = wires[i];
+    if (!w.Value())
+	{
+		if(setupGame[4] == i)
+		{
+			//Номер кнопки останавливающей таймер ( 1-10 )
+		}
+		else if (setupGame[6] == i)
+		{
+			//Номер кнопки которая остановит отсчет на определеное время.
+		}
+		else if (setupGame[8] == i)
+		{
+			//Номер кнопки замедляющий отсчет
+		}
+		else
+		{
+			//Ускоряем таймер
+		}
+	}
+  }
+}
+
+//Чтение пароля
+void readPassword()
+{
+  static uint8_t stringLength = 0;
+  static uint8_t pass = 0;
+
+  char key = keypad.getKey();
+  if (key == NO_KEY)
+    return;
+
+  rele();
+
+  if ((key != '*') && (key != '#'))
+  {
+    if (stringLength < 2)
+    {
+      if (stringLength == 0) pass = (key - 48) * 10;
+      if (stringLength == 1) pass += (key - 48);
+      lcd.setCursor(stringLength + cursorOneStr, 1);
+      lcd.print(key);
+      ++stringLength;
+    }
+  }
+  if (key == '*')
+  {
+    pass = 0;
+    stringLength = 0;
+    lcd.setCursor(cursorOneStr, 1);
+    lcd.print(F("????????"));
+  }
+  if (key == '#' && setupGame[globalState] > 0)
+  {
+	  if(globalState[1] != pass){ //Пароль не верный
+		globalState[2]; //Ускорение отсчета  при вводе неверного пароля
+		--globalState[3]; //Количество попыток ввода пароля
+	  }
+	  else
+	  {
+		  ++globalState; //Завершили игру
+	  }
+  }	
 }
