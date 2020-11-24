@@ -714,7 +714,7 @@ void SetupSensitivityEfect()
     {
       if (stringLength == 0) setupGame[globalState] = (key - 48) * 10;
       if (stringLength == 1) setupGame[globalState] += (key - 48);
-      lcd.setCursor(stringLength + 14, 1);
+      lcd.setCursor(stringLength + 11, 1);
       lcd.print(key);
       ++stringLength;
     }
@@ -811,9 +811,18 @@ void SetupAnyPress()
 
   rele();
 
+  int cellEeprom = 0;
   for (uint8_t i = 0; i < adress; ++i) {
-    EEPROM.write(i, setupGame[i]);
-    delay(4);
+    if (i == 0 || i == 1) {
+      EEPROMWritelong(cellEeprom, setupGame[i]);
+      cellEeprom += 3;
+    }
+    else
+    {
+      EEPROM.write(cellEeprom, setupGame[i]);
+    }
+    ++cellEeprom;
+    delay(1);
   }
   ++globalState;
 }

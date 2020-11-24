@@ -25,11 +25,21 @@ void setup() {
 
   showHello();
   delay(2000);
+
   if (EEPROM.read(0) != 255 && EEPROM.read(0) > 0)
   {
-    for (uint8_t i = 0; i < adress; ++i)
-    {
-      setupGame[i] = EEPROM.read(i);       //Чтение параметров
+    int cellEeprom = 0;
+    for (uint8_t i = 0; i < adress; ++i) {
+      if (i == 0 || i == 1) {
+        setupGame[i] = EEPROMReadlong(cellEeprom);
+        cellEeprom += 3;
+      }
+      else
+      {
+        setupGame[i] = EEPROM.read(cellEeprom);
+      }
+      ++cellEeprom;
+      delay(1);
     }
     globalState = 16;
     ShowSave();    //Меню сохраненные настройки
