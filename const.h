@@ -1,4 +1,4 @@
-#define DEVICE 0
+#define DEVICE 1
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 

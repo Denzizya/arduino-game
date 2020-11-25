@@ -3,7 +3,8 @@
 #include "functions.h"
 #include "menu.h"
 
-void setup() {
+void setup()
+{
 
   Serial.begin(115200);
 
@@ -15,7 +16,8 @@ void setup() {
   keypad.setDebounceTime(frequency_button);
 
   //Кнопки деактивации
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i)
+  {
     wires[i].SetPin(WIRE_PINS[i]);
   }
 
@@ -29,7 +31,8 @@ void setup() {
   if (EEPROM.read(0) != 255 && EEPROM.read(0) > 0)
   {
     int cellEeprom = 0;
-    for (uint8_t i = 0; i < adress; ++i) {
+    for (uint8_t i = 0; i < adress; ++i)
+    {
       if (i == 0 || i == 1) {
         setupGame[i] = EEPROMReadlong(cellEeprom);
         cellEeprom += 3;
@@ -50,8 +53,10 @@ void setup() {
   }
 }
 
-void loop() {
-  switch (globalState) {
+void loop()
+{
+  switch (globalState)
+  {
     case 0: SetupBombTime(); break;           //Установка времени игры
     case 1: SetupPassword(); break;           //Ввод пароля
     case 2: SetupIncorrectPassword(); break;  //Ускорение отсчета  при вводе неверного пароля
@@ -70,7 +75,8 @@ void loop() {
     case 15: SetupPointMenu(); break;         //Выбор параметров блютуз
     case 16: SetupSave(); break;              //Запрос восстановление данных
     case 17: SetupAnyPress(); break;          //Ожидания старта
-    case 18: timerGame(); break;            //Начало игры
+    case 18: timerGame(); break;              //Начало игры
+    case 19: GameOver(); break;               //Конец игры
   }
   //if (globalState < 12) ledWave();
 }

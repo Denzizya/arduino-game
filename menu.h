@@ -230,6 +230,19 @@ void ShowTimerGame()
   lcd.print(F("Pass:  ????????"));
   setupTimeLastMillis = millis();
 }
+
+//Конец игры
+void GameOver()
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Time -> 00:00:00"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("                "));
+  lcd.setCursor(3, 1);
+  lcd.print(F("Game Over!"));
+  ++globalState;
+}
 //=================================================================================================================//
 
 //Установить таймер
@@ -315,7 +328,7 @@ void SetupPassword()
   }
 }
 
-//Установка пароля
+//Ускорение при неверно введенном пароле
 void SetupIncorrectPassword()
 {
   static uint8_t stringLength = 0;
@@ -346,8 +359,18 @@ void SetupIncorrectPassword()
   }
   if (key == '#' && setupGame[globalState] > 0)
   {
-    ++globalState;
-    ShowAttempts();
+    if (setupGame[globalState] > 20)
+    {
+      setupGame[globalState] = 0;
+      stringLength = 0;
+      lcd.setCursor(cursorOneStr, 1);
+      lcd.print(F("00"));
+    }
+    else
+    {
+      ++globalState;
+      ShowAttempts();
+    }
   }
 }
 

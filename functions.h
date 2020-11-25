@@ -71,10 +71,10 @@ bool viewZeroString()
 {
   if ((millis() - setupTimeLastMillis) > speedTime)
   {
+    setupGame[0] -= 1;
     lcd.setCursor(cursorZeroStr, 0);
     lcd.print(ConstructTimeString(setupGame[0]));
     setupTimeLastMillis = millis();
-    setupGame[0] -= 1;
   }
 }
 
@@ -87,7 +87,7 @@ void readButton()
     {
       if (setupGame[4] == i)
       {
-        //Номер кнопки останавливающей таймер ( 1-10 )
+        //Номер кнопки останавливающей таймер
       }
       else if (setupGame[6] == i)
       {
@@ -101,6 +101,7 @@ void readButton()
       {
         //Ускоряем таймер
       }
+      rele();
     }
   }
 }
@@ -111,12 +112,12 @@ void readPassword()
   static uint8_t stringLength = 0;
   static long pass = 0;
   static long realPass = 0;
-  
+
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
 
-//  rele();
+  rele();
 
   if ((key != '*') && (key != '#'))
   {
@@ -147,12 +148,22 @@ void readPassword()
   }
   if (key == '#' && pass > 0)
   {
-Serial.println(pass);
-Serial.println(setupGame[1]);
-    if (setupGame[1] != pass) { //Пароль не верный
-      //setupGame[2]; //Ускорение отсчета  при вводе неверного пароля
-      //long passSet = globalState[3];
-      --setupGame[3]; //Количество попыток ввода пароля
+    Serial.println(pass);
+    Serial.println(setupGame[1]);
+    if (setupGame[1] != pass) {
+      if (setupGame[3] > 0)
+      {
+        //        speedTime -= setupGame[2] * 10;
+        //        --setupGame[3]; //Количество попыток ввода пароля
+      }
+      else if (setupGame[3] == 0)
+      {
+        ++globalState; //Завершили игру
+      }
+      pass = 0;
+      stringLength = 0;
+      lcd.setCursor(0, 1);
+      lcd.print(F("Pass:  ????????"));
     }
     else
     {
@@ -166,11 +177,13 @@ Serial.println(setupGame[1]);
 
 void timerGame()
 {
-  if (setupGame[0] == 0)
-  {
-    ++globalState; // Конец игры
-  }
   viewZeroString(); //Показываем время таймера
   readButton();    //Считываем нажатие тумблеров
   readPassword(); //Ввод пароля
+
+  //Время вышло.
+  if (setupGame[0] == 0)
+  {
+    ++globalState;
+  }
 }
