@@ -412,6 +412,12 @@ void SetupAttempts()
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(F("00"));
     }
+    else if (setupGame[globalState] == 0)
+    {
+      setupGame[globalState] = 100;
+      ++globalState;
+      ShowCorrectToggle();
+    }
     else
     {
       ++globalState;

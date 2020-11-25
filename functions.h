@@ -148,13 +148,19 @@ void readPassword()
   }
   if (key == '#' && pass > 0)
   {
-    Serial.println(pass);
-    Serial.println(setupGame[1]);
     if (setupGame[1] != pass) {
-      if (setupGame[3] > 0)
+      //Количество попыток ввода пароля
+      if (setupGame[3] > 0 && setupGame[3] < 11)
       {
-        //        speedTime -= setupGame[2] * 10;
-        //        --setupGame[3]; //Количество попыток ввода пароля
+        long correctSpeedTime = setupGame[2] * 10;
+        if (correctSpeedTime < speedTime) {
+          speedTime -= correctSpeedTime;
+        }
+        else
+        {
+          speedTime = 1;
+        }
+        --setupGame[3];
       }
       else if (setupGame[3] == 0)
       {
@@ -167,7 +173,9 @@ void readPassword()
     }
     else
     {
-      ++globalState; //Завершили игру
+      globalState += 2; //Завершили игру
+      lcd.setCursor(0, 1);
+      lcd.print(F("Bomb Deactiva..."));
     }
 
   }
