@@ -21,6 +21,12 @@ void setup()
     wires[i].SetPin(WIRE_PINS_BUTTON[i]);
   }
 
+  //Кнопки деактивации
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i)
+  {
+    wires[i].SetPin(WIRE_PINS_BUTTON[i]);
+  }
+
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
   digitalWrite(RELAY_PINS, OFF);

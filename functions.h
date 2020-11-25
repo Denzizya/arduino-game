@@ -25,6 +25,33 @@ class WireSensor {
 };
 WireSensor wires[WIRE_PINS_COUNT_BUTTON];
 
+//LED индикация
+class LedIndication {
+  public:
+    LedIndication() : _pin{0}, _processed{0} {};
+    void SetPin(uint8_t pin) {
+      _pin = pin;
+      pinMode(pin, OUTPUT);
+      digitalWrite(pin, LOW);
+    }
+    uint8_t Pin() const {
+      return _pin;
+    }
+    void MarkProcessed() {
+      _processed = 1;
+    }
+    uint8_t Processed() const {
+      return _processed;
+    }
+    boolean Value() const {
+      boolean _ret = ( digitalRead(_pin) && HIGH );
+      return _ret;
+    }
+  private:
+    uint8_t _pin;
+    uint8_t _processed;
+};
+LedIndication led[WIRE_PINS_COUNT_LED_ONE];
 
 //Реле
 void rele()
