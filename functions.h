@@ -50,30 +50,8 @@ long EEPROMReadlong(long address)
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
 
-void ShowTimerLcd()
-{
-
-  uint8_t timeStringMin = setupGame[0] / 1000 / 60;
-  uint8_t timeStringSec;
-  String view = String(timeStringMin);
-  lcd.setCursor(cursorZeroStr, 0);
-  lcd.print(view);
-
-}
-
-void timerGame()
-{
-  if(setupGame[0] == 0)
-  {
-	++globalState; // Конец игры
-  }
-
-  viewZeroString(); //Показываем время таймера
-  readButton();		//Считываем нажатие тумблеров
-  readPassword();	//Ввод пароля
-}
-
-String ConstructTimeString(unsigned long secs) 
+//Секунды в строку (час:мин:сек)
+String ConstructTimeString(unsigned long secs)
 {
   uint8_t hours = secs / 3600;
   uint8_t minutes = secs / 60 - hours * 60;
@@ -88,20 +66,16 @@ String ConstructTimeString(unsigned long secs)
   return String(str);
 }
 
-//===========================================================================================//
-
 //Отображение остчета времени
 bool viewZeroString()
 {
-if ((millis() - setupTimeLastMillis) > speedTime)
+  if ((millis() - setupTimeLastMillis) > speedTime)
   {
     lcd.setCursor(cursorZeroStr, 0);
-    lcd.print(ConstructTimeString(unsigned long setupGame[0]));
+    lcd.print(ConstructTimeString(setupGame[0]));
     setupTimeLastMillis = millis();
-	--setupGame[0];
-    return true;
+    setupGame[0] -= 1;
   }
-  return false;
 }
 
 //Чтение тумблеров
@@ -110,24 +84,24 @@ void readButton()
   for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
     auto &w = wires[i];
     if (!w.Value())
-	{
-		if(setupGame[4] == i)
-		{
-			//Номер кнопки останавливающей таймер ( 1-10 )
-		}
-		else if (setupGame[6] == i)
-		{
-			//Номер кнопки которая остановит отсчет на определеное время.
-		}
-		else if (setupGame[8] == i)
-		{
-			//Номер кнопки замедляющий отсчет
-		}
-		else
-		{
-			//Ускоряем таймер
-		}
-	}
+    {
+      if (setupGame[4] == i)
+      {
+        //Номер кнопки останавливающей таймер ( 1-10 )
+      }
+      else if (setupGame[6] == i)
+      {
+        //Номер кнопки которая остановит отсчет на определеное время.
+      }
+      else if (setupGame[8] == i)
+      {
+        //Номер кнопки замедляющий отсчет
+      }
+      else
+      {
+        //Ускоряем таймер
+      }
+    }
   }
 }
 
@@ -135,22 +109,32 @@ void readButton()
 void readPassword()
 {
   static uint8_t stringLength = 0;
-  static uint8_t pass = 0;
-
+  static long pass = 0;
+  static long realPass = 0;
+  
   char key = keypad.getKey();
   if (key == NO_KEY)
     return;
 
-  rele();
+//  rele();
 
   if ((key != '*') && (key != '#'))
   {
-    if (stringLength < 2)
+    if (stringLength < 8)
     {
-      if (stringLength == 0) pass = (key - 48) * 10;
-      if (stringLength == 1) pass += (key - 48);
+      switch (stringLength)
+      {
+        case 7: pass += (key - 48) * 3;
+        case 6: pass += (key - 48) * 3;
+        case 5: pass += (key - 48) * 3;
+        case 4: pass += (key - 48) * 3;
+        case 3: pass += (key - 48) * 3;
+        case 2: pass += (key - 48) * 3;
+        case 1: pass += (key - 48) * 3;
+        case 0: pass += (key - 48) * 3;
+      }
       lcd.setCursor(stringLength + cursorOneStr, 1);
-      lcd.print(key);
+      lcd.print(F("*"));
       ++stringLength;
     }
   }
@@ -158,18 +142,35 @@ void readPassword()
   {
     pass = 0;
     stringLength = 0;
-    lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("????????"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Pass:  ????????"));
   }
-  if (key == '#' && setupGame[globalState] > 0)
+  if (key == '#' && pass > 0)
   {
-	  if(globalState[1] != pass){ //Пароль не верный
-		globalState[2]; //Ускорение отсчета  при вводе неверного пароля
-		--globalState[3]; //Количество попыток ввода пароля
-	  }
-	  else
-	  {
-		  ++globalState; //Завершили игру
-	  }
-  }	
+Serial.println(pass);
+Serial.println(setupGame[1]);
+    if (setupGame[1] != pass) { //Пароль не верный
+      //setupGame[2]; //Ускорение отсчета  при вводе неверного пароля
+      //long passSet = globalState[3];
+      --setupGame[3]; //Количество попыток ввода пароля
+    }
+    else
+    {
+      ++globalState; //Завершили игру
+    }
+
+  }
+}
+
+//=====================================================================================//
+
+void timerGame()
+{
+  if (setupGame[0] == 0)
+  {
+    ++globalState; // Конец игры
+  }
+  viewZeroString(); //Показываем время таймера
+  readButton();    //Считываем нажатие тумблеров
+  readPassword(); //Ввод пароля
 }

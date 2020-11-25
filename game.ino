@@ -70,7 +70,7 @@ void loop() {
     case 15: SetupPointMenu(); break;         //Выбор параметров блютуз
     case 16: SetupSave(); break;              //Запрос восстановление данных
     case 17: SetupAnyPress(); break;          //Ожидания старта
-    case 18: StartGame(); break;              //Начало игры
+    case 18: timerGame(); break;            //Начало игры
   }
   //if (globalState < 12) ledWave();
 }

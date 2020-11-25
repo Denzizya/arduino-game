@@ -224,10 +224,10 @@ void ShowTimerGame()
   lcd.print(F("Time -> 00:00:00"));
   cursorZeroStr = 8;
   lcd.setCursor(cursorZeroStr, 0);
-  lcd.print(ConstructTimeString(unsigned long setupGame[0]));
-  cursorOneStr = 4;
-  lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("????????"));
+  lcd.print(ConstructTimeString(setupGame[0]));
+  cursorOneStr = 7;
+  lcd.setCursor(0, 1);
+  lcd.print(F("Pass:  ????????"));
   setupTimeLastMillis = millis();
 }
 //=================================================================================================================//
@@ -252,18 +252,16 @@ void SetupBombTime()
       lcd.setCursor(timeStringLength + cursorOneStr, 1);
       lcd.print(key);
       ++timeStringLength;
-    }    
+    }
   }
   else if (key == '*')
   {
     timeStringLength = 0;
-    timeStringLengthSec = 0;
     memset(timeStringMin, 0, sizeof(timeStringMin));
-    memset(timeStringSec, 0, sizeof(timeStringSec));
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("000"));
   }
-  else if ((key == '#') && ((atol(timeStringMin) > 0) || (atol(timeStringSec) > 0)))
+  else if ((key == '#') && (atol(timeStringMin) > 0))
   {
     long gameTimeSec = (unsigned long)atol(timeStringMin) * 60;
     setupGame[globalState] = gameTimeSec;
@@ -825,35 +823,4 @@ void SetupAnyPress()
   ++globalState;
   setupTimeLastMillis = millis();
   ShowTimerGame();
-}
-
-void StartGame()
-{
-  timerGame();
-  /*
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("*******************"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("*******************"));
-    Serial.println(setupGame[0]);
-    Serial.println(setupGame[1]);
-    Serial.println(setupGame[2]);
-    Serial.println(setupGame[3]);
-    Serial.println(setupGame[4]);
-    Serial.println(setupGame[5]);
-    Serial.println(setupGame[6]);
-    Serial.println(setupGame[7]);
-    Serial.println(setupGame[8]);
-    Serial.println(setupGame[9]);
-    Serial.println(setupGame[10]);
-    Serial.println(setupGame[11]);
-    Serial.println(setupGame[12]);
-    Serial.println(setupGame[13]);
-    Serial.println(setupGame[14]);
-    Serial.println(setupGame[15]);
-    Serial.println(setupGame[16]);
-    Serial.println(setupGame[17]);
-    ++globalState;
-  */
 }

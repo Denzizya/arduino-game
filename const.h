@@ -1,4 +1,4 @@
-#define DEVICE 1
+#define DEVICE 0
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -56,13 +56,3 @@ uint8_t globalTimer = 0;          //Тайвер установки времен
 
 uint8_t cursorZeroStr = 0;  //Курсор нулевой строки
 uint8_t cursorOneStr = 0;   //Курсор первой строки
-
-
-
-
-
-int runTimer = 1;
-int runFor = 60; // time in seconds
-//int buzzerPin = 13;
-//    int relayPin=4;
-int data = 0;
