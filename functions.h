@@ -1,10 +1,19 @@
 //Определение кнопки
 class WireSensor {
   public:
-    WireSensor() : _pin{0} {};
+    WireSensor() : _pin{0}, _processed{0} {};
     void SetPin(uint8_t pin) {
       _pin = pin;
       pinMode(pin, INPUT_PULLUP);
+    }
+    uint8_t Pin() const {
+      return _pin;
+    }
+    void MarkProcessed() {
+      _processed = 1;
+    }
+    uint8_t Processed() const {
+      return _processed;
     }
     boolean Value() const {
       boolean _ret = ( digitalRead(_pin) && HIGH );
@@ -12,8 +21,9 @@ class WireSensor {
     }
   private:
     uint8_t _pin;
+    uint8_t _processed;
 };
-WireSensor wires[WIRE_PINS_COUNT];
+WireSensor wires[WIRE_PINS_COUNT_BUTTON];
 
 
 //Реле
@@ -71,37 +81,67 @@ bool viewZeroString()
 {
   if ((millis() - setupTimeLastMillis) > speedTime)
   {
+    Serial.println(speedTime);
     setupGame[0] -= 1;
     lcd.setCursor(cursorZeroStr, 0);
     lcd.print(ConstructTimeString(setupGame[0]));
     setupTimeLastMillis = millis();
+
+    //Сброс заморозки времени
+    if (setupGame[6] == 20)
+    {
+      speedTime = 1000;
+    }
   }
 }
 
 //Чтение тумблеров
-void readButton()
+void buttonRead()
 {
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+  if ((millis() - setupMiddleTimeMillis) > 60000)
+  {
+    if (setupGame[9] > 0)
+    {
+      --setupGame[10]; 
+    }
+    else
+    {
+      speedTime = 1000;
+    }
+    setupMiddleTimeMillis = millis();
+  }
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (!w.Value())
+    if (!w.Value() && !w.Processed())
     {
       if (setupGame[4] == i)
       {
-        //Номер кнопки останавливающей таймер
+        long minusTime = (setupGame[0] * setupGame[5]) / 100;
+        setupGame[0] -= minusTime;
       }
-      else if (setupGame[6] == i)
+      else if (setupGame[6] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
-        //Номер кнопки которая остановит отсчет на определеное время.
+        long stopTime = (setupGame[7] * 60) * 1000;
+        speedTime = stopTime;
+        setupGame[6] = 20;
       }
-      else if (setupGame[8] == i)
+      else if (setupGame[8] == i) //Номер кнопки замедляющий отсчет
       {
-        //Номер кнопки замедляющий отсчет
+        speedTime *= setupGame[9];
       }
       else
       {
-        //Ускоряем таймер
+        long correctSpeedTime = 140;
+        if (correctSpeedTime < speedTime) {
+          speedTime -= correctSpeedTime;
+        }
+        else
+        {
+          speedTime = 1;
+        }
       }
       rele();
+      w.MarkProcessed();
     }
   }
 }
@@ -148,18 +188,13 @@ void readPassword()
   }
   if (key == '#' && pass > 0)
   {
-    if (setupGame[1] != pass) {
+    if (setupGame[1] != pass)
+    {
       //Количество попыток ввода пароля
       if (setupGame[3] > 0 && setupGame[3] < 11)
       {
-        long correctSpeedTime = setupGame[2] * 10;
-        if (correctSpeedTime < speedTime) {
-          speedTime -= correctSpeedTime;
-        }
-        else
-        {
-          speedTime = 1;
-        }
+        long correctSpeedTime = setupGame[2] * 60;
+        setupGame[0] -= correctSpeedTime;
         --setupGame[3];
       }
       else if (setupGame[3] == 0)
@@ -174,10 +209,7 @@ void readPassword()
     else
     {
       globalState += 2; //Завершили игру
-      lcd.setCursor(0, 1);
-      lcd.print(F("Bomb Deactiva..."));
     }
-
   }
 }
 
@@ -186,8 +218,8 @@ void readPassword()
 void timerGame()
 {
   viewZeroString(); //Показываем время таймера
-  readButton();    //Считываем нажатие тумблеров
-  readPassword(); //Ввод пароля
+  buttonRead();     //Считываем нажатие тумблеров
+  readPassword();   //Ввод пароля
 
   //Время вышло.
   if (setupGame[0] == 0)

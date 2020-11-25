@@ -16,9 +16,9 @@ void setup()
   keypad.setDebounceTime(frequency_button);
 
   //Кнопки деактивации
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i)
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i)
   {
-    wires[i].SetPin(WIRE_PINS[i]);
+    wires[i].SetPin(WIRE_PINS_BUTTON[i]);
   }
 
   //Реле
@@ -59,10 +59,10 @@ void loop()
   {
     case 0: SetupBombTime(); break;           //Установка времени игры
     case 1: SetupPassword(); break;           //Ввод пароля
-    case 2: SetupIncorrectPassword(); break;  //Ускорение отсчета  при вводе неверного пароля
+    case 2: SetupIncorrectPassword(); break;  //Убираем минуты при неверном вводе пароля
     case 3: SetupAttempts(); break;           //Количество попыток ввода пароля
-    case 4: SetupCorrectToggle(); break;      //Номер кнопки останавливающей таймер ( 1-10 )
-    case 5: SetupIncorrectToogle(); break;    //Если нажимаем 65-значит время убавится на  65 процентов от оставшегося
+    case 4: SetupCorrectToggle(); break;      //Номер кнопки останавливающей таймер
+    case 5: SetupIncorrectToogle(); break;    //Если нажимаем 65-значит время убавится на 65 процентов от оставшегося
     case 6: SetupStopToogle(); break;         //Номер кнопки замедляющий отсчет
     case 7: SetupStopTime(); break;           //Заморозка таймера
     case 8: SetupSlomoToogle(); break;        //Номер кнопки замедляющий отсчет
@@ -76,7 +76,8 @@ void loop()
     case 16: SetupSave(); break;              //Запрос восстановление данных
     case 17: SetupAnyPress(); break;          //Ожидания старта
     case 18: timerGame(); break;              //Начало игры
-    case 19: GameOver(); break;               //Конец игры
+    case 19: GameOver(); break;               //Конец игры Поражение
+    case 20: GameWin(); break;                //Конец игры Победа
   }
   //if (globalState < 12) ledWave();
 }

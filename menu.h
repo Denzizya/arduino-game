@@ -29,15 +29,15 @@ void ShowPassword()
   lcd.setCursor(cursorOneStr, 1);
 }
 
-//Ускорение отсчета  при вводе неверного пароля
+//Убираем минуты при неверном вводе пароля
 ShowIncorrectPassword()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Incorrect Pass:"));
   cursorOneStr = 7;
-  lcd.setCursor(cursorOneStr, 1);
-  lcd.print(F("00"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("Time = 00"));
   lcd.setCursor(cursorOneStr, 1);
 }
 
@@ -231,7 +231,7 @@ void ShowTimerGame()
   setupTimeLastMillis = millis();
 }
 
-//Конец игры
+//Конец игры Поражение
 void GameOver()
 {
   lcd.clear();
@@ -241,6 +241,14 @@ void GameOver()
   lcd.print(F("                "));
   lcd.setCursor(3, 1);
   lcd.print(F("Game Over!"));
+  ++globalState;
+}
+
+//Конец игры Победа
+void GameWin()
+{
+  lcd.setCursor(0, 1);
+  lcd.print(F("Bomb Deactiva..."));
   ++globalState;
 }
 //=================================================================================================================//
@@ -328,7 +336,7 @@ void SetupPassword()
   }
 }
 
-//Ускорение при неверно введенном пароле
+//Убираем минуты при неверном вводе пароля
 void SetupIncorrectPassword()
 {
   static uint8_t stringLength = 0;
@@ -354,23 +362,13 @@ void SetupIncorrectPassword()
   {
     setupGame[globalState] = 0;
     stringLength = 0;
-    lcd.setCursor(cursorOneStr, 1);
-    lcd.print(F("00"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Time = 00"));
   }
   if (key == '#' && setupGame[globalState] > 0)
   {
-    if (setupGame[globalState] > 20)
-    {
-      setupGame[globalState] = 0;
-      stringLength = 0;
-      lcd.setCursor(cursorOneStr, 1);
-      lcd.print(F("00"));
-    }
-    else
-    {
-      ++globalState;
-      ShowAttempts();
-    }
+    ++globalState;
+    ShowAttempts();
   }
 }
 
@@ -429,7 +427,7 @@ void SetupAttempts()
 //Номер кнопки останавливающей таймер ( 1-10 )
 void SetupCorrectToggle()
 {
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
     if (!w.Value()) {
       setupGame[globalState] = i;
@@ -486,7 +484,7 @@ void SetupIncorrectToogle()
 //Номер кнопки которая остановит отсчет на определеное время.
 void SetupStopToogle()
 {
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
     if (!w.Value() && setupGame[4] != i) {
       setupGame[globalState] = i;
@@ -553,7 +551,7 @@ void SetupStopTime()
 //Номер кнопки замедляющий отсчет
 void SetupSlomoToogle()
 {
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT; ++i) {
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
     if (!w.Value() && setupGame[4] != i && setupGame[6] != i) {
       setupGame[globalState] = i;
