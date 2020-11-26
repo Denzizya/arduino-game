@@ -135,13 +135,14 @@ bool viewZeroString()
     lcd.print(ConstructTimeString(setupGame[0]));
     setupTimeLastMillis = millis();
 
-    LedOne(yar);
+/*
     if (yar > 19)
     {
       yar = 0;
     }
+    LedOne(yar);
     ++yar;
-
+*/
     //Сброс заморозки времени
     if (setupGame[5] == 20)
     {
@@ -265,6 +266,103 @@ void readPassword()
   }
 }
 
+//==============================================================
+
+String ReadFromStream(Stream &stream)
+{
+  String ret{};
+  if (stream.available())
+  {
+    ret.reserve(stream.available());
+  }
+  while (stream.available() > 0)
+  {
+    ret += (char)stream.read();
+  }
+  return ret;
+}
+
+
+bool CheckBluetoothDevice(const String &mac, int rssi, const String &name)
+{
+  if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
+  {
+    if (!USE_BLUETOOTH_MACS)
+      return true;
+
+    for (uint8_t i = 0; i < MACS_COUNT; ++i)
+    {
+      if (mac == VALID_MACS[i])
+        return true;
+    }
+  }
+  return false;
+}
+
+String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
+{
+  auto endIdx = s.indexOf(separator, startIdx);
+  if (~endIdx)
+  {
+    return s.substring(startIdx, endIdx);
+  }
+  return {};
+}
+
+bool ProcessBluetooth()
+{
+  static unsigned long time = millis();
+  if (millis() - time > SCAN_DELAY_MS)
+  {
+    bluetooth.print(F("AT+SCAN1"));
+    time = millis();
+  }
+
+  auto s = ReadFromStream(bluetooth);
+  if (!s.startsWith(F("+DEV")))
+    return false;
+
+  auto mac = ExtractSubstring(s, ',', 7);
+  if (mac.length() == 0)
+    return false;
+
+  auto rssi = ExtractSubstring(s, ',', 7 + mac.length() + 1);
+  if (rssi.length() == 0)
+    return false;
+
+  auto name = s.substring(7 + mac.length() + rssi.length() + 2);
+  name.trim();
+  if (name.length() == 0)
+    return false;
+
+  return CheckBluetoothDevice(mac, rssi.toInt(), name);
+}
+
+bool ValidBluetooth()
+{
+  static unsigned long time = millis();
+  static bool state = false;
+
+  if (ProcessBluetooth())
+  {
+    state = true;
+    time = millis();
+  }
+  else if (millis() - time > ATTEMPTS_TO_DISCONNECT * SCAN_DELAY_MS)
+  {
+    state = false;
+  }
+
+  return state;
+}
+
+bool BluetoothSerch()
+{
+    if (ValidBluetooth())
+    {
+      globalState += 2; //Завершили игру Победа
+    }
+}
 //=====================================================================================//
 
 void timerGame()
@@ -272,6 +370,7 @@ void timerGame()
   viewZeroString(); //Показываем время таймера
   buttonRead();     //Считываем нажатие тумблеров
   readPassword();   //Ввод пароля
+  BluetoothSerch(); //Поиск Блютуз
 
   //Время вышло.
   if (setupGame[0] == 0)

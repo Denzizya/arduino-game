@@ -8,6 +8,24 @@ void setup()
 
   Serial.begin(115200);
 
+
+  bluetooth.begin(BLUETOOTH_BAUDRATE);
+  delay(100);
+  bluetooth.print("AT+HOSTEN1");
+  delay(100);
+  if (!ReadFromStream(bluetooth).startsWith(F("+OK")))
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Bluetooth failed"));
+    lcd.setCursor(4, 1);
+    lcd.print(F("Check it"));
+
+    while (true)
+    {
+    }
+  }
+  
   // Иницилизация LCD
   lcd.begin();
   lcd.backlight();

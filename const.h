@@ -25,6 +25,22 @@ uint8_t WIRE_PINS_BUTTON[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 /*** LED ***/
 uint8_t WIRE_PINS_LED[] = {52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22};
 const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
+
+// bluetooth settings
+#define BLUETOOTH_BAUDRATE 115200
+#define SCAN_DELAY_MS 2000
+#define ATTEMPTS_TO_DISCONNECT 5 // how much attempts before freeze the device
+#define MIN_VALID_RSSI -90
+#define VALID_NAME F("BOMB_POINT")
+#define USE_BLUETOOTH_MACS false
+
+SoftwareSerial bluetooth(2, 3);
+
+const char *VALID_MACS[] = {
+  "C4F3121708DC",
+};
+const uint8_t MACS_COUNT = sizeof(VALID_MACS) / sizeof(char *);
+
 #endif
 Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
 
