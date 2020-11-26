@@ -21,11 +21,15 @@ void setup()
     wires[i].SetPin(WIRE_PINS_BUTTON[i]);
   }
 
-  //Кнопки деактивации
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i)
+#if DEVICE == 1
+
+#else
+  //LED
+  for (uint8_t i = 0; i < WIRE_PINS_COUNT_LED; ++i)
   {
-    wires[i].SetPin(WIRE_PINS_BUTTON[i]);
+    led[i].SetPin(WIRE_PINS_LED[i]);
   }
+#endif
 
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
@@ -50,7 +54,7 @@ void setup()
       ++cellEeprom;
       delay(1);
     }
-    globalState = 16;
+    globalState = 15;
     ShowSave();    //Меню сохраненные настройки
   }
   else
@@ -65,25 +69,24 @@ void loop()
   {
     case 0: SetupBombTime(); break;           //Установка времени игры
     case 1: SetupPassword(); break;           //Ввод пароля
-    case 2: SetupIncorrectPassword(); break;  //Убираем минуты при неверном вводе пароля
-    case 3: SetupAttempts(); break;           //Количество попыток ввода пароля
-    case 4: SetupCorrectToggle(); break;      //Номер кнопки останавливающей таймер
-    case 5: SetupIncorrectToogle(); break;    //Если нажимаем 65-значит время убавится на 65 процентов от оставшегося
-    case 6: SetupStopToogle(); break;         //Номер кнопки замедляющий отсчет
-    case 7: SetupStopTime(); break;           //Заморозка таймера
-    case 8: SetupSlomoToogle(); break;        //Номер кнопки замедляющий отсчет
-    case 9: SetupSlomoTime(); break;          //Во сколько раз медленее  будет отсчет.
-    case 10: SetupTimeEfect(); break;         //Сколько минут будет действовать этот эффект.
-    case 11: SetupSensitivity(); break;       //Чуствительность акселерометра.
-    case 12: SetupSensitivityTime(); break;   //Во сколько раз должен ускориться отсчет при срабатывании модуля.
-    case 13: SetupSensitivityEfect(); break;  //Отрезок времени для ускорения.
-    case 14: SetupPoint(); break;             //Активация блютуза.
-    case 15: SetupPointMenu(); break;         //Выбор параметров блютуз
-    case 16: SetupSave(); break;              //Запрос восстановление данных
-    case 17: SetupAnyPress(); break;          //Ожидания старта
-    case 18: timerGame(); break;              //Начало игры
-    case 19: GameOver(); break;               //Конец игры Поражение
-    case 20: GameWin(); break;                //Конец игры Победа
+    case 2: SetupAttempts(); break;           //Количество попыток ввода пароля
+    case 3: SetupCorrectToggle(); break;      //Номер кнопки останавливающей таймер
+    case 4: SetupIncorrectToogle(); break;    //Если нажимаем 65-значит время убавится на 65 процентов от оставшегося
+    case 5: SetupStopToogle(); break;         //Номер кнопки замедляющий отсчет
+    case 6: SetupStopTime(); break;           //Заморозка таймера
+    case 7: SetupSlomoToogle(); break;        //Номер кнопки замедляющий отсчет
+    case 8: SetupSlomoTime(); break;          //Во сколько раз медленее будет отсчет.
+    case 9: SetupTimeEfect(); break;          //Сколько минут будет действовать этот эффект.
+    case 10: SetupSensitivity(); break;       //Чуствительность акселерометра.
+    case 11: SetupSensitivityTime(); break;   //Во сколько раз должен ускориться отсчет при срабатывании модуля.
+    case 12: SetupSensitivityEfect(); break;  //Отрезок времени для ускорения.
+    case 13: SetupPoint(); break;             //Активация блютуза.
+    case 14: SetupPointMenu(); break;         //Выбор параметров блютуз
+    case 15: SetupSave(); break;              //Запрос восстановление данных
+    case 16: SetupAnyPress(); break;          //Ожидания старта
+    case 17: timerGame(); break;              //Начало игры
+    case 18: GameOver(); break;               //Конец игры Поражение
+    case 19: GameWin(); break;                //Конец игры Победа
   }
   //if (globalState < 12) ledWave();
 }

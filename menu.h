@@ -10,7 +10,7 @@ void showTextBombTime()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print(F("Bomb time, min:"));
+  lcd.print(F("Bomb time:"));
   cursorOneStr = 7;
   lcd.setCursor(cursorOneStr, 1);
   lcd.print(F("000"));
@@ -26,18 +26,6 @@ void ShowPassword()
   cursorOneStr = 4;
   lcd.setCursor(cursorOneStr, 1);
   lcd.print(F("00000000"));
-  lcd.setCursor(cursorOneStr, 1);
-}
-
-//Убираем минуты при неверном вводе пароля
-ShowIncorrectPassword()
-{
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Incorrect Pass:"));
-  cursorOneStr = 7;
-  lcd.setCursor(0, 1);
-  lcd.print(F("Time = 00"));
   lcd.setCursor(cursorOneStr, 1);
 }
 
@@ -132,8 +120,8 @@ void ShowSlomoTime()
 void ShowTimeEfect()
 {
   lcd.clear();
-  lcd.setCursor(2, 0);
-  lcd.print(F("Time effect:"));
+  lcd.setCursor(0, 0);
+  lcd.print(F("Time effect/min:"));
   cursorOneStr = 7;
   lcd.setCursor(cursorOneStr, 1);
   lcd.print(F("00"));
@@ -157,7 +145,7 @@ void ShowSensitivityTime()
 {
   lcd.clear();
   lcd.setCursor(3, 0);
-  lcd.print(F("Set time:"));
+  lcd.print(F("Accel Time:"));
   cursorOneStr = 7;
   lcd.setCursor(cursorOneStr, 1);
   lcd.print(F("00"));
@@ -241,7 +229,7 @@ void GameOver()
   lcd.print(F("                "));
   lcd.setCursor(3, 1);
   lcd.print(F("Game Over!"));
-  ++globalState;
+  globalState += 2;
 }
 
 //Конец игры Победа
@@ -256,7 +244,6 @@ void GameWin()
 //Установить таймер
 void SetupBombTime()
 {
-  static char timeStringMin[3];
   static uint8_t timeStringLength = 0;
 
   char key = keypad.getKey();
@@ -269,7 +256,18 @@ void SetupBombTime()
   {
     if (timeStringLength < 3)
     {
-      timeStringMin[timeStringLength] = key;
+      if (timeStringLength == 0)
+      {
+        setupGame[globalState] = (key - 48) * 100;
+      }
+      if (timeStringLength == 1)
+      {
+        setupGame[globalState] += (key - 48) * 10;
+      }
+      if (timeStringLength == 2)
+      {
+        setupGame[globalState] += (key - 48);
+      }
       lcd.setCursor(timeStringLength + cursorOneStr, 1);
       lcd.print(key);
       ++timeStringLength;
@@ -278,14 +276,12 @@ void SetupBombTime()
   else if (key == '*')
   {
     timeStringLength = 0;
-    memset(timeStringMin, 0, sizeof(timeStringMin));
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("000"));
   }
-  else if ((key == '#') && (atol(timeStringMin) > 0))
+  else if ((key == '#') && (setupGame[globalState] > 0))
   {
-    long gameTimeSec = (unsigned long)atol(timeStringMin) * 60;
-    setupGame[globalState] = gameTimeSec;
+    setupGame[globalState] *= 60;
     ++globalState;
     ShowPassword();
   }
@@ -328,42 +324,6 @@ void SetupPassword()
     stringLength = 0;
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("00000000"));
-  }
-  if (key == '#' && setupGame[globalState] > 0)
-  {
-    ++globalState;
-    ShowIncorrectPassword();
-  }
-}
-
-//Убираем минуты при неверном вводе пароля
-void SetupIncorrectPassword()
-{
-  static uint8_t stringLength = 0;
-
-  char key = keypad.getKey();
-  if (key == NO_KEY)
-    return;
-
-  rele();
-
-  if ((key != '*') && (key != '#'))
-  {
-    if (stringLength < 2)
-    {
-      if (stringLength == 0) setupGame[globalState] = (key - 48) * 10;
-      if (stringLength == 1) setupGame[globalState] += (key - 48);
-      lcd.setCursor(stringLength + cursorOneStr, 1);
-      lcd.print(key);
-      ++stringLength;
-    }
-  }
-  if (key == '*')
-  {
-    setupGame[globalState] = 0;
-    stringLength = 0;
-    lcd.setCursor(0, 1);
-    lcd.print(F("Time = 00"));
   }
   if (key == '#' && setupGame[globalState] > 0)
   {
@@ -486,7 +446,7 @@ void SetupStopToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (!w.Value() && setupGame[4] != i) {
+    if (!w.Value() && setupGame[3] != i) {
       setupGame[globalState] = i;
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(setupGame[globalState]);
@@ -553,7 +513,7 @@ void SetupSlomoToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (!w.Value() && setupGame[4] != i && setupGame[6] != i) {
+    if (!w.Value() && setupGame[3] != i && setupGame[5] != i) {
       setupGame[globalState] = i;
       lcd.setCursor(cursorOneStr, 1);
       lcd.print(setupGame[globalState]);
@@ -846,6 +806,10 @@ void SetupAnyPress()
     }
     ++cellEeprom;
     delay(1);
+  }
+  for (int i = 0; i < adress; ++i)
+  {
+    Serial.println(setupGame[i]);
   }
   ++globalState;
   setupTimeLastMillis = millis();

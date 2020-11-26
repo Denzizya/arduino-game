@@ -25,33 +25,29 @@ class WireSensor {
 };
 WireSensor wires[WIRE_PINS_COUNT_BUTTON];
 
+#if DEVICE == 1
+
+#else
 //LED индикация
 class LedIndication {
   public:
-    LedIndication() : _pin{0}, _processed{0} {};
+    LedIndication() : _pin{0} {};
     void SetPin(uint8_t pin) {
       _pin = pin;
       pinMode(pin, OUTPUT);
       digitalWrite(pin, LOW);
     }
-    uint8_t Pin() const {
-      return _pin;
+    boolean On() const {
+      digitalWrite(_pin, HIGH);
     }
-    void MarkProcessed() {
-      _processed = 1;
-    }
-    uint8_t Processed() const {
-      return _processed;
-    }
-    boolean Value() const {
-      boolean _ret = ( digitalRead(_pin) && HIGH );
-      return _ret;
+    boolean Off() const {
+      digitalWrite(_pin, LOW);
     }
   private:
     uint8_t _pin;
-    uint8_t _processed;
 };
-LedIndication led[WIRE_PINS_COUNT_LED_ONE];
+LedIndication led[WIRE_PINS_COUNT_LED];
+#endif
 
 //Реле
 void rele()
@@ -115,7 +111,7 @@ bool viewZeroString()
     setupTimeLastMillis = millis();
 
     //Сброс заморозки времени
-    if (setupGame[6] == 20)
+    if (setupGame[5] == 20)
     {
       speedTime = 1000;
     }
@@ -125,11 +121,12 @@ bool viewZeroString()
 //Чтение тумблеров
 void buttonRead()
 {
+  //Сброс замедления времени
   if ((millis() - setupMiddleTimeMillis) > 60000)
   {
-    if (setupGame[9] > 0)
+    if (setupGame[8] > 0)
     {
-      --setupGame[10]; 
+      --setupGame[9];
     }
     else
     {
@@ -141,31 +138,23 @@ void buttonRead()
     auto &w = wires[i];
     if (!w.Value() && !w.Processed())
     {
-      if (setupGame[4] == i)
+      if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
-        long minusTime = (setupGame[0] * setupGame[5]) / 100;
-        setupGame[0] -= minusTime;
+        globalState += 2;
       }
-      else if (setupGame[6] == i)   //Номер кнопки которая остановит отсчет на определеное время.
+      else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
-        long stopTime = (setupGame[7] * 60) * 1000;
+        long stopTime = (setupGame[6] * 60) * 1000;
         speedTime = stopTime;
-        setupGame[6] = 20;
+        setupGame[5] = 20;
       }
-      else if (setupGame[8] == i) //Номер кнопки замедляющий отсчет
+      else if (setupGame[7] == i) //Номер кнопки замедляющий отсчет
       {
-        speedTime *= setupGame[9];
+        speedTime *= setupGame[8];
       }
       else
       {
-        long correctSpeedTime = 140;
-        if (correctSpeedTime < speedTime) {
-          speedTime -= correctSpeedTime;
-        }
-        else
-        {
-          speedTime = 1;
-        }
+        setupGame[0] -= setupGame[4];
       }
       rele();
       w.MarkProcessed();
@@ -178,7 +167,6 @@ void readPassword()
 {
   static uint8_t stringLength = 0;
   static long pass = 0;
-  static long realPass = 0;
 
   char key = keypad.getKey();
   if (key == NO_KEY)
@@ -218,15 +206,18 @@ void readPassword()
     if (setupGame[1] != pass)
     {
       //Количество попыток ввода пароля
-      if (setupGame[3] > 0 && setupGame[3] < 11)
+      if (setupGame[2] > 0 && setupGame[2] < 11)
       {
-        long correctSpeedTime = setupGame[2] * 60;
-        setupGame[0] -= correctSpeedTime;
-        --setupGame[3];
+        setupGame[0] -= 600;
+        if (setupGame[0] < 3)
+        {
+          setupGame[0] = 2;
+        }
+        --setupGame[2];
       }
-      else if (setupGame[3] == 0)
+      else if (setupGame[2] == 0)
       {
-        ++globalState; //Завершили игру
+        ++globalState; //Завершили игру Поражение
       }
       pass = 0;
       stringLength = 0;
@@ -235,7 +226,7 @@ void readPassword()
     }
     else
     {
-      globalState += 2; //Завершили игру
+      globalState += 2; //Завершили игру Победа
     }
   }
 }
