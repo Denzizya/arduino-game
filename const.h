@@ -1,4 +1,4 @@
-#define DEVICE 1
+#define DEVICE 0
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -52,7 +52,7 @@ unsigned long setupTimeLastMillis;	//Метка времени
 unsigned long speedTime = 1000;		  //Скорость таймера
 unsigned long setupMiddleTimeMillis;//Таймер замедления
 
-/**********************/
+/**************************************************************/
 uint8_t globalState = 0;          //Пункт меню
 bool globalStateButton = false;   //Вывод меню
 const uint8_t adress = 15;        //Количество параметров
@@ -61,3 +61,8 @@ uint8_t globalTimer = 0;          //Тайвер установки времен
 
 uint8_t cursorZeroStr = 0;  //Курсор нулевой строки
 uint8_t cursorOneStr = 0;   //Курсор первой строки
+
+
+/*********** LED ****************/
+uint8_t sw = 0;     //Позиция яркой капли
+uint8_t yar = 0;  //Яркость

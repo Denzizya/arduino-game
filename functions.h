@@ -37,6 +37,9 @@ class LedIndication {
       pinMode(pin, OUTPUT);
       digitalWrite(pin, LOW);
     }
+    uint8_t Pin() const {
+      return _pin;
+    }
     boolean On() const {
       digitalWrite(_pin, HIGH);
     }
@@ -83,6 +86,28 @@ long EEPROMReadlong(long address)
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
 
+//LED режим капля
+void LedOne(int i)
+{
+  if (i > 0 && i < 5 || i > 15)
+  {
+    ++sw;
+  }
+  switch (sw)
+  {
+    case 4: digitalWrite(led[(i - 4)].Pin(), LOW);
+    case 3: digitalWrite(led[(i - 3)].Pin(), 60);
+    case 2: digitalWrite(led[(i - 2)].Pin(), 125);
+    case 1: digitalWrite(led[(i - 1)].Pin(), 190);
+    case 0: digitalWrite(led[i].Pin(), 255); break;
+
+    case 5: digitalWrite(led[(i - 1)].Pin(), 190); digitalWrite(led[(i - 2)].Pin(), 125); digitalWrite(led[(i - 3)].Pin(), 60); break;
+    case 6: digitalWrite(led[(i - 2)].Pin(), 125); digitalWrite(led[(i - 3)].Pin(), 60); break;
+    case 7: digitalWrite(led[(i - 3)].Pin(), 60);
+    case 8: digitalWrite(led[(i - 4)].Pin(), LOW);
+  }
+}
+
 //Секунды в строку (час:мин:сек)
 String ConstructTimeString(unsigned long secs)
 {
@@ -109,6 +134,14 @@ bool viewZeroString()
     lcd.setCursor(cursorZeroStr, 0);
     lcd.print(ConstructTimeString(setupGame[0]));
     setupTimeLastMillis = millis();
+
+    LedOne(yar);
+    ++yar;
+
+    if (yar > 19)
+    {
+      yar = 0;
+    }
 
     //Сброс заморозки времени
     if (setupGame[5] == 20)
@@ -214,13 +247,13 @@ void readPassword()
       {
         ++globalState; //Завершили игру Поражение
       }
-      
+
       setupGame[0] -= 600;
       if (setupGame[0] < 3)
       {
         setupGame[0] = 2;
       }
-      
+
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);
