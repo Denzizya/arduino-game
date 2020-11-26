@@ -71,7 +71,7 @@ void loop()
     case 1: SetupPassword(); break;           //Ввод пароля
     case 2: SetupAttempts(); break;           //Количество попыток ввода пароля
     case 3: SetupCorrectToggle(); break;      //Номер кнопки останавливающей таймер
-    case 4: SetupIncorrectToogle(); break;    //Если нажимаем 65-значит время убавится на 65 процентов от оставшегося
+    case 4: SetupIncorrectToogle(); break;    //Сколько минут отнять
     case 5: SetupStopToogle(); break;         //Номер кнопки замедляющий отсчет
     case 6: SetupStopTime(); break;           //Заморозка таймера
     case 7: SetupSlomoToogle(); break;        //Номер кнопки замедляющий отсчет

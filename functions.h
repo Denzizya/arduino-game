@@ -208,17 +208,19 @@ void readPassword()
       //Количество попыток ввода пароля
       if (setupGame[2] > 0 && setupGame[2] < 11)
       {
-        setupGame[0] -= 600;
-        if (setupGame[0] < 3)
-        {
-          setupGame[0] = 2;
-        }
         --setupGame[2];
       }
       else if (setupGame[2] == 0)
       {
         ++globalState; //Завершили игру Поражение
       }
+      
+      setupGame[0] -= 600;
+      if (setupGame[0] < 3)
+      {
+        setupGame[0] = 2;
+      }
+      
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);

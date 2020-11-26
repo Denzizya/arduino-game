@@ -276,6 +276,7 @@ void SetupBombTime()
   else if (key == '*')
   {
     timeStringLength = 0;
+    setupGame[globalState] = 0;
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("000"));
   }
@@ -436,6 +437,7 @@ void SetupIncorrectToogle()
   }
   if (key == '#')
   {
+    setupGame[globalState] *= 60;
     ++globalState;
     ShowStopToogle();
   }
