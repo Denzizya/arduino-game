@@ -101,10 +101,10 @@ void LedOne(int i)
     case 1: digitalWrite(led[(i - 1)].Pin(), 190);
     case 0: digitalWrite(led[i].Pin(), 255); break;
 
-    case 5: digitalWrite(led[(i - 1)].Pin(), 190); digitalWrite(led[(i - 2)].Pin(), 125); digitalWrite(led[(i - 3)].Pin(), 60); break;
-    case 6: digitalWrite(led[(i - 2)].Pin(), 125); digitalWrite(led[(i - 3)].Pin(), 60); break;
-    case 7: digitalWrite(led[(i - 3)].Pin(), 60);
-    case 8: digitalWrite(led[(i - 4)].Pin(), LOW);
+    case 5: digitalWrite(led[(i - 1)].Pin(), 190);
+    case 6: digitalWrite(led[(i - 2)].Pin(), 125);
+    case 7: digitalWrite(led[(i - 3)].Pin(), 60); 
+    case 8: digitalWrite(led[(i - 4)].Pin(), LOW); 
   }
 }
 
@@ -136,12 +136,11 @@ bool viewZeroString()
     setupTimeLastMillis = millis();
 
     LedOne(yar);
-    ++yar;
-
     if (yar > 19)
     {
       yar = 0;
     }
+    ++yar;
 
     //Сброс заморозки времени
     if (setupGame[5] == 20)
