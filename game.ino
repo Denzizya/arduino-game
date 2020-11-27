@@ -8,12 +8,16 @@ void setup()
 
   Serial.begin(115200);
 
+  // Иницилизация LCD
+  lcd.begin();
+  lcd.backlight();
 
-  bluetooth.begin(BLUETOOTH_BAUDRATE);
+  //Определение блютуз
+  Serial1.begin(BLUETOOTH_BAUDRATE);
   delay(100);
-  bluetooth.print("AT+HOSTEN1");
+  Serial1.print("AT+HOSTEN1");
   delay(100);
-  if (!ReadFromStream(bluetooth).startsWith(F("+OK")))
+  if (!ReadFromStream(Serial1).startsWith(F("+OK")))
   {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -25,10 +29,6 @@ void setup()
     {
     }
   }
-  
-  // Иницилизация LCD
-  lcd.begin();
-  lcd.backlight();
 
   // Определение параметра подавления дребезга контактов на клавиатуре
   keypad.setDebounceTime(frequency_button);

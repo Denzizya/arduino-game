@@ -20,7 +20,7 @@ uint8_t WIRE_PINS_BUTTON[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 #else
 uint8_t KEYPAD_COL_PINS[KEYPAD_COLS] = {A2, A1, A0};
 uint8_t KEYPAD_ROW_PINS[KEYPAD_ROWS] = {A6, A5, A4, A3};
-uint8_t WIRE_PINS_BUTTON[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+uint8_t WIRE_PINS_BUTTON[] = {4, 5, 6, 7, 8, 9, 10, 11};
 
 /*** LED ***/
 uint8_t WIRE_PINS_LED[] = {52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22};
@@ -33,8 +33,6 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 #define MIN_VALID_RSSI -90
 #define VALID_NAME F("BOMB_POINT")
 #define USE_BLUETOOTH_MACS false
-
-SoftwareSerial bluetooth(2, 3);
 
 const char *VALID_MACS[] = {
   "C4F3121708DC",

@@ -268,6 +268,7 @@ void readPassword()
 
 //==============================================================
 
+//Чтение данных с блютуз
 String ReadFromStream(Stream &stream)
 {
   String ret{};
@@ -282,7 +283,7 @@ String ReadFromStream(Stream &stream)
   return ret;
 }
 
-
+//Сравнения имени mac, rssi, name с указаными
 bool CheckBluetoothDevice(const String &mac, int rssi, const String &name)
 {
   if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
@@ -299,6 +300,7 @@ bool CheckBluetoothDevice(const String &mac, int rssi, const String &name)
   return false;
 }
 
+//Поиск в строк в данных
 String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 {
   auto endIdx = s.indexOf(separator, startIdx);
@@ -309,16 +311,17 @@ String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
   return {};
 }
 
+//Поиск устройств
 bool ProcessBluetooth()
 {
   static unsigned long time = millis();
   if (millis() - time > SCAN_DELAY_MS)
   {
-    bluetooth.print(F("AT+SCAN1"));
+    Serial1.print(F("AT+SCAN1"));
     time = millis();
   }
 
-  auto s = ReadFromStream(bluetooth);
+  auto s = ReadFromStream(Serial1);
   if (!s.startsWith(F("+DEV")))
     return false;
 
@@ -352,7 +355,6 @@ bool ValidBluetooth()
   {
     state = false;
   }
-
   return state;
 }
 
