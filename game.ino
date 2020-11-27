@@ -25,11 +25,14 @@ void setup()
     lcd.setCursor(4, 1);
     lcd.print(F("Check it"));
 
-    while (true)
-    {
-    }
+//    while (true){}
   }
-
+ 
+  Serial1.print("AT+RST");
+  delay(100);
+  ReadFromStream(Serial1);
+  Serial.println("Bluetooth is ready");
+  
   // Определение параметра подавления дребезга контактов на клавиатуре
   keypad.setDebounceTime(frequency_button);
 
@@ -52,6 +55,9 @@ void setup()
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
   digitalWrite(RELAY_PINS, OFF);
+  
+  //Buzzer
+  pinMode(BUZZER_PIN, OUTPUT);
 
   showHello();
   delay(2000);

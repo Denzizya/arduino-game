@@ -103,8 +103,8 @@ void LedOne(int i)
 
     case 5: digitalWrite(led[(i - 1)].Pin(), 190);
     case 6: digitalWrite(led[(i - 2)].Pin(), 125);
-    case 7: digitalWrite(led[(i - 3)].Pin(), 60); 
-    case 8: digitalWrite(led[(i - 4)].Pin(), LOW); 
+    case 7: digitalWrite(led[(i - 3)].Pin(), 60);
+    case 8: digitalWrite(led[(i - 4)].Pin(), LOW);
   }
 }
 
@@ -122,33 +122,6 @@ String ConstructTimeString(unsigned long secs)
   str[8] = 0;
 
   return String(str);
-}
-
-//Отображение остчета времени
-bool viewZeroString()
-{
-  if ((millis() - setupTimeLastMillis) > speedTime)
-  {
-    Serial.println(speedTime);
-    setupGame[0] -= 1;
-    lcd.setCursor(cursorZeroStr, 0);
-    lcd.print(ConstructTimeString(setupGame[0]));
-    setupTimeLastMillis = millis();
-
-/*
-    if (yar > 19)
-    {
-      yar = 0;
-    }
-    LedOne(yar);
-    ++yar;
-*/
-    //Сброс заморозки времени
-    if (setupGame[5] == 20)
-    {
-      speedTime = 1000;
-    }
-  }
 }
 
 //Чтение тумблеров
@@ -286,6 +259,8 @@ String ReadFromStream(Stream &stream)
 //Сравнения имени mac, rssi, name с указаными
 bool CheckBluetoothDevice(const String &mac, int rssi, const String &name)
 {
+  Serial.print("name -> ");
+  Serial.println(name);
   if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
   {
     if (!USE_BLUETOOTH_MACS)
@@ -320,21 +295,29 @@ bool ProcessBluetooth()
     Serial1.print(F("AT+SCAN1"));
     time = millis();
   }
-
   auto s = ReadFromStream(Serial1);
+  Serial.print("ProcessBluetooth -> ");
+  Serial.println(s);
   if (!s.startsWith(F("+DEV")))
-    return false;
+    Serial.println("+DEV");
+  return false;
 
   auto mac = ExtractSubstring(s, ',', 7);
+  Serial.print("mac -> ");
+  Serial.println(mac);
   if (mac.length() == 0)
     return false;
 
   auto rssi = ExtractSubstring(s, ',', 7 + mac.length() + 1);
+  Serial.print("rssi -> ");
+  Serial.println(rssi);
   if (rssi.length() == 0)
     return false;
 
   auto name = s.substring(7 + mac.length() + rssi.length() + 2);
   name.trim();
+  Serial.print("name -> ");
+  Serial.println(name);
   if (name.length() == 0)
     return false;
 
@@ -360,10 +343,48 @@ bool ValidBluetooth()
 
 bool BluetoothSerch()
 {
-    if (ValidBluetooth())
+  if (ValidBluetooth())
+  {
+    globalState += 2; //Завершили игру Победа
+  }
+}
+
+void Buzzer()
+{
+  tone(BUZZER_PIN, 1800);
+  delay(50);
+  tone(BUZZER_PIN, 150);
+  delay(50);
+  noTone(BUZZER_PIN);
+}
+
+//Отображение остчета времени
+bool viewZeroString()
+{
+  if ((millis() - setupTimeLastMillis) > speedTime)
+  {
+    Serial.println(speedTime);
+    setupGame[0] -= 1;
+    lcd.setCursor(cursorZeroStr, 0);
+    lcd.print(ConstructTimeString(setupGame[0]));
+    setupTimeLastMillis = millis();
+    //Сброс заморозки времени
+    if (setupGame[5] == 20)
     {
-      globalState += 2; //Завершили игру Победа
+      speedTime = 1000;
     }
+
+    /*
+        if (yar > 19)
+        {
+          yar = 0;
+        }
+        LedOne(yar);
+        ++yar;
+    */
+    BluetoothSerch(); //Поиск Блютуз
+    Buzzer();
+  }
 }
 //=====================================================================================//
 
@@ -372,7 +393,6 @@ void timerGame()
   viewZeroString(); //Показываем время таймера
   buttonRead();     //Считываем нажатие тумблеров
   readPassword();   //Ввод пароля
-  BluetoothSerch(); //Поиск Блютуз
 
   //Время вышло.
   if (setupGame[0] == 0)

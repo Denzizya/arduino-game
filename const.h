@@ -57,9 +57,7 @@ uint8_t frequency_button = 20;  //Скорось нажатия кнопки
 #define OFF HIGH
 
 /*** BUZZER ***/
-//#define BUZZER_PIN 13
-//#define BUZZER_FREQUENCY 200
-
+#define BUZZER_PIN 13
 
 /*** Timer ***/
 unsigned long setupTimeLastMillis;	//Метка времени
