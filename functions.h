@@ -367,13 +367,14 @@ void CheckAccel()
     init = true;
   }
 
+  //На сколько секунд ускоряем
   if (speedAccel)
   {
-    if ((millis() - timeAccel) > (setupGame[12] * 60 * 1000))
+    if ((millis() - timeAccel) > (setupGame[12] * 1000))
     {
-      speedTime = 1000;
+//      speedTime = 1000;
+      speedAccel = false;
     }
-    speedAccel = false;
   }
 
   int16_t x, y, z;
@@ -385,9 +386,9 @@ void CheckAccel()
   ay = y;
   az = z;
   auto length = sqrt(dx * dx + dy * dy + dz * dz) / 1000;
-  if (length > setupGame[10])
+  if (length > setupGame[10]) //Чувствотельность
   {
-    speedTime = (int)(speedTime / setupGame[11]);
+    speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
   }
@@ -440,7 +441,10 @@ void timerGame()
   ViewZeroString(); //Показываем время таймера
   ButtonRead();     //Считываем нажатие тумблеров
   ReadPassword();   //Ввод пароля
-  CheckAccel();     //Акселерометр
+  if (setupGame[10] > 0)
+  {
+    CheckAccel();     //Акселерометр
+  }
 
   //Время вышло.
   if (setupGame[0] == 0)

@@ -635,6 +635,18 @@ void SetupSensitivity()
   {
     if (setupGame[globalState] > 0)
     {
+      switch (setupGame[globalState])
+      {
+        case 1: setupGame[globalState] = 9; break;
+        case 2: setupGame[globalState] = 8; break;
+        case 3: setupGame[globalState] = 7; break;
+        case 4: setupGame[globalState] = 6; break;
+        case 5: setupGame[globalState] = 5; break;
+        case 6: setupGame[globalState] = 4; break;
+        case 7: setupGame[globalState] = 3; break;
+        case 8: setupGame[globalState] = 2; break;
+        case 9: setupGame[globalState] = 1; break;
+      }
       ++globalState;
       ShowSensitivityTime();
     }

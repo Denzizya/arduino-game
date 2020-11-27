@@ -51,7 +51,8 @@ uint8_t frequency_button = 20;  //Скорось нажатия кнопки
 
 //Акселерометр
 MPU6050 mpu(0x68);
-int16_t ax, ay, az, timeAccel;
+int16_t ax, ay, az;
+long timeAccel;
 bool speedAccel = false;
 
 //==========================================================================//
