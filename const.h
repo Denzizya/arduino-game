@@ -55,6 +55,12 @@ int16_t ax, ay, az;
 long timeAccel;
 bool speedAccel = false;
 
+
+//Плеер 
+DFRobotDFPlayerMini audio{};
+#define AUDIO_VOLUME 30 // min = 0, max = 30
+uint8_t audioConnected = 0;
+
 //==========================================================================//
 
 

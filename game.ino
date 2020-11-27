@@ -7,15 +7,16 @@ void setup()
 {
 
   Serial.begin(115200);
+  Serial1.begin(9600); //Плеер
 
   //Акселерометр
   mpu.initialize();
   mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
-  
+
   // Иницилизация LCD
   lcd.begin();
   lcd.backlight();
-  
+
 #if DEVICE == 1
 
 #else
@@ -32,15 +33,15 @@ void setup()
     lcd.setCursor(4, 1);
     lcd.print(F("Check it"));
 
-//    while (true){}
+    //    while (true){}
   }
- 
+
   Serial1.print("AT+RST");
   delay(100);
   ReadFromStream(Serial1);
   Serial.println("Bluetooth is ready");
- #endif
-  
+#endif
+
   // Определение параметра подавления дребезга контактов на клавиатуре
   keypad.setDebounceTime(frequency_button);
 
@@ -60,10 +61,24 @@ void setup()
   }
 #endif
 
+  //Плеер
+  if (!audio.begin(Serial1)) {
+    audioConnected = 0;
+    lcd.clear();
+    lcd.setCursor(2, 0);
+    lcd.print("Audio failed");
+    lcd.setCursor(0, 1);
+    lcd.print("Check wires/card");
+    delay(3000);
+  } else {
+    audioConnected = 1;
+    audio.volume(AUDIO_VOLUME);
+  }
+
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
   digitalWrite(RELAY_PINS, OFF);
-  
+
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
 

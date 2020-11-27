@@ -217,6 +217,7 @@ void ShowTimerGame()
   lcd.setCursor(0, 1);
   lcd.print(F("Pass:  ????????"));
   setupTimeLastMillis = millis();
+  audio.play(1);
 }
 
 //Конец игры Поражение
