@@ -677,8 +677,18 @@ void SetupSensitivityTime()
   }
   if (key == '#')
   {
-    ++globalState;
-    ShowSensitivityEfect();
+    if (setupGame[globalState] > 20 || setupGame[globalState] < 2)
+    {
+      setupGame[globalState] = 0;
+      stringLength = 0;
+      lcd.setCursor(cursorOneStr, 1);
+      lcd.print(F("00"));
+    }
+    else
+    {
+      ++globalState;
+      ShowSensitivityEfect();
+    }
   }
 }
 

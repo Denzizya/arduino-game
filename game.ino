@@ -8,10 +8,17 @@ void setup()
 
   Serial.begin(115200);
 
+  //Акселерометр
+  mpu.initialize();
+  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
+  
   // Иницилизация LCD
   lcd.begin();
   lcd.backlight();
+  
+#if DEVICE == 1
 
+#else
   //Определение блютуз
   Serial1.begin(BLUETOOTH_BAUDRATE);
   delay(100);
@@ -32,6 +39,7 @@ void setup()
   delay(100);
   ReadFromStream(Serial1);
   Serial.println("Bluetooth is ready");
+ #endif
   
   // Определение параметра подавления дребезга контактов на клавиатуре
   keypad.setDebounceTime(frequency_button);

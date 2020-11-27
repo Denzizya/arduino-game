@@ -86,6 +86,9 @@ long EEPROMReadlong(long address)
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
 
+#if DEVICE == 1
+
+#else
 //LED режим капля
 void LedOne(int i)
 {
@@ -107,6 +110,7 @@ void LedOne(int i)
     case 8: digitalWrite(led[(i - 4)].Pin(), LOW);
   }
 }
+#endif
 
 //Секунды в строку (час:мин:сек)
 String ConstructTimeString(unsigned long secs)
@@ -125,7 +129,7 @@ String ConstructTimeString(unsigned long secs)
 }
 
 //Чтение тумблеров
-void buttonRead()
+void ButtonRead()
 {
   //Сброс замедления времени
   if ((millis() - setupMiddleTimeMillis) > 60000)
@@ -169,7 +173,7 @@ void buttonRead()
 }
 
 //Чтение пароля
-void readPassword()
+void ReadPassword()
 {
   static uint8_t stringLength = 0;
   static long pass = 0;
@@ -240,7 +244,9 @@ void readPassword()
 }
 
 //==============================================================
+#if DEVICE == 1
 
+#else
 //Чтение данных с блютуз
 String ReadFromStream(Stream &stream)
 {
@@ -348,7 +354,46 @@ bool BluetoothSerch()
     globalState += 2; //Завершили игру Победа
   }
 }
+#endif
+//===============================================================================
 
+//Акселерометр
+void CheckAccel()
+{
+  static bool init = false;
+  if (!init)
+  {
+    mpu.getAcceleration(&ax, &ay, &az);
+    init = true;
+  }
+
+  if (speedAccel)
+  {
+    if ((millis() - timeAccel) > (setupGame[12] * 60 * 1000))
+    {
+      speedTime = 1000;
+    }
+    speedAccel = false;
+  }
+
+  int16_t x, y, z;
+  mpu.getAcceleration(&x, &y, &z);
+  float dx = x * 1.0f - ax;
+  float dy = y * 1.0f - ay;
+  float dz = z * 1.0f - az;
+  ax = x;
+  ay = y;
+  az = z;
+  auto length = sqrt(dx * dx + dy * dy + dz * dz) / 1000;
+  if (length > setupGame[10])
+  {
+    speedTime = (int)(speedTime / setupGame[11]);
+    speedAccel = true;
+    timeAccel = millis();
+  }
+}
+
+//===============================================================================
 void Buzzer()
 {
   tone(BUZZER_PIN, 1800);
@@ -358,8 +403,10 @@ void Buzzer()
   noTone(BUZZER_PIN);
 }
 
+//===============================================================================
+
 //Отображение остчета времени
-bool viewZeroString()
+bool ViewZeroString()
 {
   if ((millis() - setupTimeLastMillis) > speedTime)
   {
@@ -382,7 +429,7 @@ bool viewZeroString()
         LedOne(yar);
         ++yar;
     */
-    BluetoothSerch(); //Поиск Блютуз
+    //    BluetoothSerch(); //Поиск Блютуз
     Buzzer();
   }
 }
@@ -390,9 +437,10 @@ bool viewZeroString()
 
 void timerGame()
 {
-  viewZeroString(); //Показываем время таймера
-  buttonRead();     //Считываем нажатие тумблеров
-  readPassword();   //Ввод пароля
+  ViewZeroString(); //Показываем время таймера
+  ButtonRead();     //Считываем нажатие тумблеров
+  ReadPassword();   //Ввод пароля
+  CheckAccel();     //Акселерометр
 
   //Время вышло.
   if (setupGame[0] == 0)
