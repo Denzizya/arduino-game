@@ -151,24 +151,36 @@ void ButtonRead()
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
         globalState += 2;
-        audio.play(8);
+        if (audioConnected)
+        {
+          audio.play(8);
+        }
       }
       else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
         long stopTime = (setupGame[6] * 60) * 1000;
         speedTime = stopTime;
         setupGame[5] = 20;
-        audio.play(10);
+        if (audioConnected)
+        {
+          audio.play(10);
+        }
       }
       else if (setupGame[7] == i) //Номер кнопки замедляющий отсчет
       {
         speedTime *= setupGame[8];
-        audio.play(11);
+        if (audioConnected)
+        {
+          audio.play(11);
+        }
       }
       else
       {
         setupGame[0] -= setupGame[4];
-        audio.play(9);
+        if (audioConnected)
+        {
+          audio.play(9);
+        }
       }
       rele();
       w.MarkProcessed();
@@ -223,15 +235,15 @@ void ReadPassword()
       if (setupGame[2] > 0 && setupGame[2] < 11)
       {
         --setupGame[2];
-        if (setupGame[2] == 3)
+        if (setupGame[2] == 3 && audioConnected)
         {
           audio.play(5);
         }
-        else if (setupGame[2] == 2)
+        else if (setupGame[2] == 2 && audioConnected)
         {
           audio.play(6);
         }
-        else if (setupGame[2] == 1)
+        else if (setupGame[2] == 1 && audioConnected)
         {
           audio.play(7);
         }
@@ -251,12 +263,18 @@ void ReadPassword()
       stringLength = 0;
       lcd.setCursor(0, 1);
       lcd.print(F("Pass:  ????????"));
-      audio.play(3);
+      if (audioConnected)
+      {
+        audio.play(3);
+      }
     }
     else
     {
       globalState += 2; //Завершили игру Победа
-      audio.play(4);
+      if (audioConnected)
+      {
+        audio.play(4);
+      }
     }
   }
 }
@@ -409,7 +427,10 @@ void CheckAccel()
     speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
-    audio.play(2);
+    if (audioConnected)
+    {
+      audio.play(2);
+    }
   }
 }
 

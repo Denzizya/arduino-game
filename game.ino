@@ -21,11 +21,11 @@ void setup()
 
 #else
   //Определение блютуз
-  Serial1.begin(BLUETOOTH_BAUDRATE);
+  Serial2.begin(BLUETOOTH_BAUDRATE);
   delay(100);
-  Serial1.print("AT+HOSTEN1");
+  Serial2.print("AT+HOSTEN1");
   delay(100);
-  if (!ReadFromStream(Serial1).startsWith(F("+OK")))
+  if (!ReadFromStream(Serial2).startsWith(F("+OK")))
   {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -36,9 +36,9 @@ void setup()
     //    while (true){}
   }
 
-  Serial1.print("AT+RST");
+  Serial2.print("AT+RST");
   delay(100);
-  ReadFromStream(Serial1);
+  ReadFromStream(Serial2);
   Serial.println("Bluetooth is ready");
 #endif
 
