@@ -214,15 +214,15 @@ void ShowTimerGame()
   lcd.setCursor(cursorZeroStr, 0);
   lcd.print(ConstructTimeString(setupGame[0]));
   cursorOneStr = 7;
-  if (setupGame[14] == 0)
+  if (setupGame[13] == 1)
   {
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  ????????"));
+    lcd.print(F("****************"));
   }
   else
   {
     lcd.setCursor(0, 1);
-    lcd.print(F("****************"));
+    lcd.print(F("Pass:  ????????"));
   }
   setupTimeLastMillis = millis();
   if (audioConnected)

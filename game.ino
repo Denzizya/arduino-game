@@ -35,11 +35,7 @@ void setup()
     while (true) {}
   }
   Serial2.print("AT+POWR0");
-  delay(100);
-  Serial2.print("AT+RST");
-  delay(100);
-  ReadFromStream(Serial2);
-  Serial.println("Bluetooth is ready");
+  delay(200);
 #endif
 
   // Определение параметра подавления дребезга контактов на клавиатуре
@@ -82,8 +78,13 @@ void setup()
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
 
-  showHello();
-  delay(2000);
+  showHello();  //Запуск меню приветствия.
+  
+  delay(1000);
+  Serial2.print("AT+RST");
+  delay(1200);
+  ReadFromStream(Serial2);
+  Serial.println("Bluetooth is ready");
 
   if (EEPROM.read(0) != 255 && EEPROM.read(0) > 0)
   {

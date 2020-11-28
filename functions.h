@@ -334,19 +334,20 @@ bool ProcessBluetooth()
   }
 
   String s = ReadFromStream(Serial2);
-  Serial.println(s);
 
   int pos = s.indexOf("=") + 1;
   if (!pos)
     return false;
 
+  Serial.println(s);
+
   String mac = ExtractSubstring(s, ',', pos);
   String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
   Serial.print("rssi -> ");
-  Serial.println(rssi);  
+  Serial.println(rssi);
   if (rssi.length() == 0)
     return false;
-    
+
   String name = s.substring(pos + mac.length() + rssi.length() + 2);
   name.trim();
   if (name.length() == 0)
@@ -463,15 +464,33 @@ void timerGame()
   {
     if (BluetoothSerch()) //Поиск Блютуз
     {
-      globalState += 2; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      if (setupGame[14] == 1)
+      if (setupGame[14] == 0)
       {
-        ReadPassword();   //Ввод пароля
+        if (!ViewMenuPass)
+        {
+          lcd.setCursor(0, 1);
+          lcd.print(F("Pass:  ????????"));
+          ViewMenuPass = true;
+          timeMenuPass = millis();
+        }
       }
       else
       {
         globalState += 2;
       }
+    }
+    else
+    {
+      if (ViewMenuPass && (millis() - timeMenuPass) > 3000)
+      {
+        lcd.setCursor(0, 1);
+        lcd.print(F("****************"));
+        ViewMenuPass = false;
+      }
+    }
+    if (ViewMenuPass)
+    {
+      ReadPassword();   //Ввод пароля
     }
   }
   else

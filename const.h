@@ -28,8 +28,8 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 
 // bluetooth settings
 #define BLUETOOTH_BAUDRATE 115200
-#define SCAN_DELAY_MS 2000
-#define MIN_VALID_RSSI -60
+#define SCAN_DELAY_MS 1000
+#define MIN_VALID_RSSI -30
 #define VALID_NAME F("BOMB_POINT")
 
 #endif
@@ -52,7 +52,9 @@ DFRobotDFPlayerMini audio{};
 uint8_t audioConnected = 0;
 
 //==========================================================================//
-
+/***MENU***/
+long timeMenuPass;
+bool ViewMenuPass = false;
 
 /*** RELE ***/
 #define RELAY_PINS 23
