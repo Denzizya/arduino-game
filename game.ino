@@ -22,7 +22,6 @@ void setup()
 #else
   //Определение блютуз
   Serial2.begin(BLUETOOTH_BAUDRATE);
-  delay(100);
   Serial2.print("AT+HOSTEN1");
   delay(100);
   if (!ReadFromStream(Serial2).startsWith(F("+OK")))
@@ -33,7 +32,7 @@ void setup()
     lcd.setCursor(4, 1);
     lcd.print(F("Check it"));
 
-    //    while (true){}
+    while (true) {}
   }
 
   Serial2.print("AT+RST");

@@ -299,20 +299,13 @@ String ReadFromStream(Stream &stream)
 }
 
 //Сравнения имени mac, rssi, name с указаными
-bool CheckBluetoothDevice(const String &mac, int rssi, const String &name)
+bool CheckBluetoothDevice(int rssi, const String &name)
 {
   Serial.print("name -> ");
   Serial.println(name);
   if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
   {
-    if (!USE_BLUETOOTH_MACS)
-      return true;
-
-    for (uint8_t i = 0; i < MACS_COUNT; ++i)
-    {
-      if (mac == VALID_MACS[i])
-        return true;
-    }
+    return true;
   }
   return false;
 }
@@ -334,10 +327,10 @@ bool ProcessBluetooth()
   static unsigned long time = millis();
   if (millis() - time > SCAN_DELAY_MS)
   {
-    Serial1.print(F("AT+SCAN1"));
+    Serial2.print(F("AT+SCAN1"));
     time = millis();
   }
-  auto s = ReadFromStream(Serial1);
+  auto s = ReadFromStream(Serial2);
   Serial.print("ProcessBluetooth -> ");
   Serial.println(s);
   if (!s.startsWith(F("+DEV")))
@@ -345,11 +338,6 @@ bool ProcessBluetooth()
   return false;
 
   auto mac = ExtractSubstring(s, ',', 7);
-  Serial.print("mac -> ");
-  Serial.println(mac);
-  if (mac.length() == 0)
-    return false;
-
   auto rssi = ExtractSubstring(s, ',', 7 + mac.length() + 1);
   Serial.print("rssi -> ");
   Serial.println(rssi);
@@ -363,7 +351,7 @@ bool ProcessBluetooth()
   if (name.length() == 0)
     return false;
 
-  return CheckBluetoothDevice(mac, rssi.toInt(), name);
+  return CheckBluetoothDevice(rssi.toInt(), name);
 }
 
 bool ValidBluetooth()
@@ -470,7 +458,10 @@ bool ViewZeroString()
         LedOne(yar);
         ++yar;
     */
-    //    BluetoothSerch(); //Поиск Блютуз
+    if (setupGame[13] == 1)
+    {
+      BluetoothSerch(); //Поиск Блютуз
+    }
     Buzzer();
   }
 }

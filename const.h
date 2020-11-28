@@ -20,10 +20,10 @@ uint8_t WIRE_PINS_BUTTON[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 #else
 uint8_t KEYPAD_COL_PINS[KEYPAD_COLS] = {A2, A1, A0};
 uint8_t KEYPAD_ROW_PINS[KEYPAD_ROWS] = {A6, A5, A4, A3};
-uint8_t WIRE_PINS_BUTTON[] = {4, 5, 6, 7, 8, 9, 10, 11};
+uint8_t WIRE_PINS_BUTTON[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40};
 
 /*** LED ***/
-uint8_t WIRE_PINS_LED[] = {52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22};
+uint8_t WIRE_PINS_LED[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 44, 45, 46};
 const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 
 // bluetooth settings
@@ -32,12 +32,6 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 #define ATTEMPTS_TO_DISCONNECT 5 // how much attempts before freeze the device
 #define MIN_VALID_RSSI -90
 #define VALID_NAME F("BOMB_POINT")
-#define USE_BLUETOOTH_MACS false
-
-const char *VALID_MACS[] = {
-  "C4F3121708DC",
-};
-const uint8_t MACS_COUNT = sizeof(VALID_MACS) / sizeof(char *);
 
 #endif
 Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
@@ -45,9 +39,6 @@ Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_
 const uint8_t WIRE_PINS_COUNT_BUTTON = sizeof(WIRE_PINS_BUTTON) / sizeof(uint8_t);
 
 uint8_t frequency_button = 20;  //Скорось нажатия кнопки
-/*
-  int button_click_arr[20][2];  //Масив настройки дребезга кнопки
-*/
 
 //Акселерометр
 MPU6050 mpu(0x68);
@@ -65,7 +56,7 @@ uint8_t audioConnected = 0;
 
 
 /*** RELE ***/
-#define RELAY_PINS 12
+#define RELAY_PINS 23
 #define ON  LOW
 #define OFF HIGH
 
