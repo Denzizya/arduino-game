@@ -291,7 +291,7 @@ String ReadFromStream(Stream &stream)
   {
     ret.reserve(stream.available());
   }
-  while (stream.available() > 0)
+  while (stream.available() > 1)
   {
     ret += (char)stream.read();
   }
@@ -303,6 +303,8 @@ bool CheckBluetoothDevice(int rssi, const String &name)
 {
   Serial.print("name -> ");
   Serial.println(name);
+
+  Serial.println("========================END===============================");
   if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
   {
     return true;
@@ -324,59 +326,44 @@ String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 //Поиск устройств
 bool ProcessBluetooth()
 {
-  static unsigned long time = millis();
-  if (millis() - time > SCAN_DELAY_MS)
+  static unsigned long timeScan = millis();
+  if (millis() - timeScan > SCAN_DELAY_MS)
   {
     Serial2.print(F("AT+SCAN1"));
-    time = millis();
+    timeScan = millis();
   }
-  auto s = ReadFromStream(Serial2);
-  Serial.print("ProcessBluetooth -> ");
-  Serial.println(s);
-  if (!s.startsWith(F("+DEV")))
-    Serial.println("+DEV");
-  return false;
 
-  auto mac = ExtractSubstring(s, ',', 7);
-  auto rssi = ExtractSubstring(s, ',', 7 + mac.length() + 1);
-  Serial.print("rssi -> ");
-  Serial.println(rssi);
-  if (rssi.length() == 0)
+  String s = ReadFromStream(Serial2);
+  Serial.println(s);
+
+  int pos = s.indexOf("=") + 1;
+  if (!pos)
     return false;
 
-  auto name = s.substring(7 + mac.length() + rssi.length() + 2);
+  String mac = ExtractSubstring(s, ',', pos);
+  String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
+  Serial.print("rssi -> ");
+  Serial.println(rssi);  
+  if (rssi.length() == 0)
+    return false;
+    
+  String name = s.substring(pos + mac.length() + rssi.length() + 2);
   name.trim();
-  Serial.print("name -> ");
-  Serial.println(name);
   if (name.length() == 0)
     return false;
 
   return CheckBluetoothDevice(rssi.toInt(), name);
 }
 
-bool ValidBluetooth()
+bool BluetoothSerch()
 {
-  static unsigned long time = millis();
   static bool state = false;
 
   if (ProcessBluetooth())
   {
     state = true;
-    time = millis();
-  }
-  else if (millis() - time > ATTEMPTS_TO_DISCONNECT * SCAN_DELAY_MS)
-  {
-    state = false;
   }
   return state;
-}
-
-bool BluetoothSerch()
-{
-  if (ValidBluetooth())
-  {
-    globalState += 2; //Завершили игру Победа
-  }
 }
 #endif
 //===============================================================================
@@ -439,7 +426,6 @@ bool ViewZeroString()
 {
   if ((millis() - setupTimeLastMillis) > speedTime)
   {
-    Serial.println(speedTime);
     setupGame[0] -= 1;
     lcd.setCursor(cursorZeroStr, 0);
     lcd.print(ConstructTimeString(setupGame[0]));
@@ -458,10 +444,6 @@ bool ViewZeroString()
         LedOne(yar);
         ++yar;
     */
-    if (setupGame[13] == 1)
-    {
-      BluetoothSerch(); //Поиск Блютуз
-    }
     Buzzer();
   }
 }
@@ -471,10 +453,30 @@ void timerGame()
 {
   ViewZeroString(); //Показываем время таймера
   ButtonRead();     //Считываем нажатие тумблеров
-  ReadPassword();   //Ввод пароля
+
   if (setupGame[10] > 0)
   {
     CheckAccel();     //Акселерометр
+  }
+
+  if (setupGame[13] == 1)
+  {
+    if (BluetoothSerch()) //Поиск Блютуз
+    {
+      globalState += 2; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      if (setupGame[14] == 1)
+      {
+        ReadPassword();   //Ввод пароля
+      }
+      else
+      {
+        globalState += 2;
+      }
+    }
+  }
+  else
+  {
+    ReadPassword();   //Ввод пароля
   }
 
   //Время вышло.

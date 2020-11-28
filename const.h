@@ -29,8 +29,7 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 // bluetooth settings
 #define BLUETOOTH_BAUDRATE 115200
 #define SCAN_DELAY_MS 2000
-#define ATTEMPTS_TO_DISCONNECT 5 // how much attempts before freeze the device
-#define MIN_VALID_RSSI -90
+#define MIN_VALID_RSSI -60
 #define VALID_NAME F("BOMB_POINT")
 
 #endif

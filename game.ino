@@ -34,7 +34,8 @@ void setup()
 
     while (true) {}
   }
-
+  Serial2.print("AT+POWR0");
+  delay(100);
   Serial2.print("AT+RST");
   delay(100);
   ReadFromStream(Serial2);
