@@ -362,9 +362,9 @@ bool ProcessBluetooth()
       {
         lcd.setCursor(0, 1);
         lcd.print(F("                "));
-        lcd.print(F("Pass:"));
-        lcd.setCursor(7, 1);
-        lcd.print(viewPassword);
+        lcd.print(F("Pass:  00000000"));
+        lcd.setCursor(8, 1);
+        lcd.print(setupGame[15]);
         ViewMenuPass = true;
         timeMenuPass = millis();
       }

@@ -303,6 +303,7 @@ void SetupBombTime()
 //Установка пароля
 void SetupPassword()
 {
+  static char viewPassword[8] = "00000000";
   static uint8_t stringLength = 0;
 
   char key = keypad.getKey();
@@ -328,20 +329,22 @@ void SetupPassword()
       }
       lcd.setCursor(stringLength + cursorOneStr, 1);
       lcd.print(key);
+      viewPassword[stringLength] = key;
       ++stringLength;
+      viewPassword[stringLength] = "E";
     }
-    viewPassword[stringLength] = key;
   }
   if (key == '*')
   {
     setupGame[globalState] = 0;
     stringLength = 0;
-    viewPassword = "00000000";
+    memset(viewPassword, 0, sizeof(viewPassword));
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("00000000"));
   }
   if (key == '#' && setupGame[globalState] > 0)
   {
+    setupGame[15] = atol(viewPassword);
     ++globalState;
     ShowAttempts();
   }
@@ -833,8 +836,10 @@ void SetupAnyPress()
   rele();
 
   int cellEeprom = 0;
-  for (uint8_t i = 0; i < adress; ++i) {
-    if (i == 0 || i == 1) {
+  for (uint8_t i = 0; i < adress; ++i)
+  {
+    if (i == 0 || i == 1 || i == (adress-1))
+    {
       EEPROMWritelong(cellEeprom, setupGame[i]);
       cellEeprom += 3;
     }
@@ -845,9 +850,7 @@ void SetupAnyPress()
     ++cellEeprom;
     delay(1);
   }
-  EEPROMWritelong(adress, atoi(viewPassword.c_str()));
-
-  ++globalState;
+  
   setupTimeLastMillis = millis();
   ShowTimerGame();
 }

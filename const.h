@@ -69,13 +69,12 @@ unsigned long setupMiddleTimeMillis;//Таймер замедления
 /**************************************************************/
 uint8_t globalState = 0;          //Пункт меню
 bool globalStateButton = false;   //Вывод меню
-const uint8_t adress = 15;        //Количество параметров
+const uint8_t adress = 16;        //Количество параметров
 long setupGame[adress];           //Сохранение параметров
 uint8_t globalTimer = 0;          //Тайвер установки времени
 
 uint8_t cursorZeroStr = 0;  //Курсор нулевой строки
 uint8_t cursorOneStr = 0;   //Курсор первой строки
-String viewPassword = "00000000";
 
 
 /*********** LED ****************/
