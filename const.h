@@ -79,5 +79,6 @@ String viewPassword = "00000000";
 
 
 /*********** LED ****************/
-uint8_t sw = 0;     //Позиция яркой капли
-uint8_t yar = 0;  //Яркость
+long timeLed;     
+uint8_t indexLed = 0;
+uint8_t sw = 0; //Позиция яркой капли

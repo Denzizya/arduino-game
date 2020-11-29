@@ -138,5 +138,5 @@ void loop()
     case 18: GameOver(); break;               //Конец игры Поражение
     case 19: GameWin(); break;                //Конец игры Победа
   }
-  //if (globalState < 12) ledWave();
+  if (globalState == 17) LedOne();
 }

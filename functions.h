@@ -90,24 +90,34 @@ long EEPROMReadlong(long address)
 
 #else
 //LED режим капля
-void LedOne(int i)
+void LedOne()
 {
-  if (i > 0 && i < 5 || (i - 1) >= WIRE_PINS_COUNT_LED)
+  if ((millis() - timeLed) > 20)
   {
-    ++sw;
-  }
-  switch (sw)
-  {
-    case 4: analogWrite(led[(i - 4)].Pin(), LOW);
-    case 3: analogWrite(led[(i - 3)].Pin(), 60);
-    case 2: analogWrite(led[(i - 2)].Pin(), 125);
-    case 1: analogWrite(led[(i - 1)].Pin(), 190);
-    case 0: analogWrite(led[i].Pin(), 255); break;
+    timeLed = millis();
+    if (indexLed > 0 && indexLed < 5 || (indexLed - 1) >= WIRE_PINS_COUNT_LED)
+    {
+      ++sw;
+    }
+    switch (sw)
+    {
+      case 4: analogWrite(led[(indexLed - 4)].Pin(), LOW);
+      case 3: analogWrite(led[(indexLed - 3)].Pin(), 60);
+      case 2: analogWrite(led[(indexLed - 2)].Pin(), 125);
+      case 1: analogWrite(led[(indexLed - 1)].Pin(), 190);
+      case 0: analogWrite(led[indexLed].Pin(), 255); break;
 
-    case 5: analogWrite(led[(i - 1)].Pin(), 190);
-    case 6: analogWrite(led[(i - 2)].Pin(), 125);
-    case 7: analogWrite(led[(i - 3)].Pin(), 60);
-    case 8: analogWrite(led[(i - 4)].Pin(), LOW);
+      case 5: analogWrite(led[(indexLed - 1)].Pin(), 190);
+      case 6: analogWrite(led[(indexLed - 2)].Pin(), 125);
+      case 7: analogWrite(led[(indexLed - 3)].Pin(), 60);
+      case 8: analogWrite(led[(indexLed - 4)].Pin(), LOW);
+    }
+    ++indexLed;
+    if(indexLed > WIRE_PINS_COUNT_LED)
+    {
+      indexLed = 0;
+      sw = 0;
+    }
   }
 }
 #endif
@@ -493,7 +503,7 @@ void timerGame()
   {
     if (BluetoothSerch()) //Поиск Блютуз
     {
-      if (setupGame[14] > 0)
+      if (setupGame[14] == 0)
       {
         globalState += 2;
       }
