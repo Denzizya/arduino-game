@@ -98,16 +98,16 @@ void LedOne(int i)
   }
   switch (sw)
   {
-    case 4: digitalWrite(led[(i - 4)].Pin(), LOW);
-    case 3: digitalWrite(led[(i - 3)].Pin(), 60);
-    case 2: digitalWrite(led[(i - 2)].Pin(), 125);
-    case 1: digitalWrite(led[(i - 1)].Pin(), 190);
-    case 0: digitalWrite(led[i].Pin(), 255); break;
+    case 4: analogWrite(led[(i - 4)].Pin(), LOW);
+    case 3: analogWrite(led[(i - 3)].Pin(), 60);
+    case 2: analogWrite(led[(i - 2)].Pin(), 125);
+    case 1: analogWrite(led[(i - 1)].Pin(), 190);
+    case 0: analogWrite(led[i].Pin(), 255); break;
 
-    case 5: digitalWrite(led[(i - 1)].Pin(), 190);
-    case 6: digitalWrite(led[(i - 2)].Pin(), 125);
-    case 7: digitalWrite(led[(i - 3)].Pin(), 60);
-    case 8: digitalWrite(led[(i - 4)].Pin(), LOW);
+    case 5: analogWrite(led[(i - 1)].Pin(), 190);
+    case 6: analogWrite(led[(i - 2)].Pin(), 125);
+    case 7: analogWrite(led[(i - 3)].Pin(), 60);
+    case 8: analogWrite(led[(i - 4)].Pin(), LOW);
   }
 }
 #endif
@@ -280,9 +280,6 @@ void ReadPassword()
 }
 
 //==============================================================
-#if DEVICE == 1
-
-#else
 //Чтение данных с блютуз
 String ReadFromStream(Stream &stream)
 {
@@ -328,12 +325,8 @@ bool ProcessBluetooth()
     if (!pos)
       return false;
 
-    Serial.println(s);
-
     String mac = ExtractSubstring(s, ',', pos);
     String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
-    Serial.print("rssi -> ");
-    Serial.println(rssi);
     if (rssi.length() == 0)
       return false;
 
@@ -342,13 +335,29 @@ bool ProcessBluetooth()
     if (name.length() == 0)
       return false;
 
-    Serial.print("name -> ");
-    Serial.println(name);
-    Serial.println("========================END===============================");
-
     if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
+    {
+      if (!ViewMenuPass)
+      {
+        lcd.setCursor(0, 1);
+        lcd.print(F("Pass:  ????????"));
+        ViewMenuPass = true;
+        timeMenuPass = millis();
+      }
       return true;
-
+    }
+    if (name == VALID_NAME_NETRAL && (int)&rssi > MIN_VALID_RSSI)
+    {
+      if (!ViewMenuPass)
+      {
+        lcd.setCursor(0, 1);
+        lcd.print(F("Pass:"));
+        lcd.setCursor(7, 1);
+        lcd.print(viewPassword);
+        ViewMenuPass = true;
+        timeMenuPass = millis();
+      }
+    }
     return false;
   }
 }
@@ -363,7 +372,6 @@ bool BluetoothSerch()
   }
   return state;
 }
-#endif
 //===============================================================================
 
 //Акселерометр
@@ -433,14 +441,39 @@ bool ViewZeroString()
     {
       speedTime = 1000;
     }
+    /*
+        ++yar;
+        if (yar > WIRE_PINS_COUNT_LED)
+        {
+          yar = 0;
+        }
+        LedOne(yar);
+    */
 
-    if (yar > 19)
-    {
-      yar = 0;
+    for (int i = 0; i < 3; i++) {
+      analogWrite(led[0].Pin(), 60);
+      delay(5);
+      analogWrite(led[1].Pin(), 125);
+      delay(5);
+      analogWrite(led[2].Pin(), 190);
+      delay(5);
+      analogWrite(led[3].Pin(), 255);
+      delay(5);
     }
-    LedOne(yar);
-    ++yar;
-    
+    /*
+        for (int i = 0; i <= 255; i++) {
+          for (int tr = 0; tr < WIRE_PINS_COUNT_LED; ++tr) {
+            analogWrite(led[tr].Pin(), i);
+          }
+          delay(5);
+        }
+        for (int i = 255; i >= 0; i--) {
+          for (int tr = 0; tr < WIRE_PINS_COUNT_LED; ++tr) {
+            analogWrite(led[tr].Pin(), i);
+          }
+          delay(5); // ставим задержку для эффекта
+        }
+    */
     Buzzer();
   }
 }
@@ -460,17 +493,7 @@ void timerGame()
   {
     if (BluetoothSerch()) //Поиск Блютуз
     {
-      if (setupGame[14] == 0)
-      {
-        if (!ViewMenuPass)
-        {
-          lcd.setCursor(0, 1);
-          lcd.print(F("Pass:  ????????"));
-          ViewMenuPass = true;
-          timeMenuPass = millis();
-        }
-      }
-      else
+      if (setupGame[14] > 0)
       {
         globalState += 2;
       }

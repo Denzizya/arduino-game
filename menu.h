@@ -330,11 +330,13 @@ void SetupPassword()
       lcd.print(key);
       ++stringLength;
     }
+    viewPassword[stringLength] = key;
   }
   if (key == '*')
   {
     setupGame[globalState] = 0;
     stringLength = 0;
+    viewPassword = "00000000";
     lcd.setCursor(cursorOneStr, 1);
     lcd.print(F("00000000"));
   }
