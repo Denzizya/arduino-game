@@ -35,7 +35,6 @@ void setup()
     while (true) {}
   }
   Serial2.print("AT+POWR0");
-  delay(200);
 #endif
 
   // Определение параметра подавления дребезга контактов на клавиатуре
@@ -57,7 +56,10 @@ void setup()
   }
 #endif
 
+  showHello();  //Запуск меню приветствия.
+  
   //Плеер
+  audio.setTimeOut(1000);
   if (!audio.begin(Serial1)) {
     audioConnected = 0;
     lcd.clear();
@@ -67,8 +69,11 @@ void setup()
     lcd.print("Check wires/card");
     delay(3000);
   } else {
+    audio.setTimeOut(5000);
+    delay(1000);
     audioConnected = 1;
     audio.volume(AUDIO_VOLUME);
+    delay(1000);
   }
 
   //Реле
@@ -78,9 +83,6 @@ void setup()
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
 
-  showHello();  //Запуск меню приветствия.
-  
-  delay(1000);
   Serial2.print("AT+RST");
   delay(1200);
   ReadFromStream(Serial2);

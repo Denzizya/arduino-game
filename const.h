@@ -28,10 +28,12 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 
 // bluetooth settings
 #define BLUETOOTH_BAUDRATE 115200
-#define SCAN_DELAY_MS 1000
-#define MIN_VALID_RSSI -30
+#define SCAN_DELAY_MS 2000
+#define MIN_VALID_RSSI -90
 #define VALID_NAME F("BOMB_POINT")
 
+long timeReadScan = millis();
+long timeScan = millis();
 #endif
 Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
 
@@ -57,7 +59,7 @@ long timeMenuPass;
 bool ViewMenuPass = false;
 
 /*** RELE ***/
-#define RELAY_PINS 23
+#define RELAY_PINS 42
 #define ON  LOW
 #define OFF HIGH
 

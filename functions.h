@@ -92,7 +92,7 @@ long EEPROMReadlong(long address)
 //LED режим капля
 void LedOne(int i)
 {
-  if (i > 0 && i < 5 || i > 15)
+  if (i > 0 && i < 5 || (i - 1) >= WIRE_PINS_COUNT_LED)
   {
     ++sw;
   }
@@ -298,20 +298,6 @@ String ReadFromStream(Stream &stream)
   return ret;
 }
 
-//Сравнения имени mac, rssi, name с указаными
-bool CheckBluetoothDevice(int rssi, const String &name)
-{
-  Serial.print("name -> ");
-  Serial.println(name);
-
-  Serial.println("========================END===============================");
-  if (name == VALID_NAME && rssi > MIN_VALID_RSSI)
-  {
-    return true;
-  }
-  return false;
-}
-
 //Поиск в строк в данных
 String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 {
@@ -326,34 +312,45 @@ String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 //Поиск устройств
 bool ProcessBluetooth()
 {
-  static unsigned long timeScan = millis();
   if (millis() - timeScan > SCAN_DELAY_MS)
   {
     Serial2.print(F("AT+SCAN1"));
     timeScan = millis();
+    timeReadScan = millis();
   }
 
-  String s = ReadFromStream(Serial2);
+  if (millis() - timeReadScan > 10)
+  {
+    timeReadScan = millis();
+    String s = ReadFromStream(Serial2);
 
-  int pos = s.indexOf("=") + 1;
-  if (!pos)
+    int pos = s.indexOf("=") + 1;
+    if (!pos)
+      return false;
+
+    Serial.println(s);
+
+    String mac = ExtractSubstring(s, ',', pos);
+    String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
+    Serial.print("rssi -> ");
+    Serial.println(rssi);
+    if (rssi.length() == 0)
+      return false;
+
+    String name = s.substring(pos + mac.length() + rssi.length() + 2);
+    name.trim();
+    if (name.length() == 0)
+      return false;
+
+    Serial.print("name -> ");
+    Serial.println(name);
+    Serial.println("========================END===============================");
+
+    if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
+      return true;
+
     return false;
-
-  Serial.println(s);
-
-  String mac = ExtractSubstring(s, ',', pos);
-  String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
-  Serial.print("rssi -> ");
-  Serial.println(rssi);
-  if (rssi.length() == 0)
-    return false;
-
-  String name = s.substring(pos + mac.length() + rssi.length() + 2);
-  name.trim();
-  if (name.length() == 0)
-    return false;
-
-  return CheckBluetoothDevice(rssi.toInt(), name);
+  }
 }
 
 bool BluetoothSerch()
@@ -437,14 +434,13 @@ bool ViewZeroString()
       speedTime = 1000;
     }
 
-    /*
-        if (yar > 19)
-        {
-          yar = 0;
-        }
-        LedOne(yar);
-        ++yar;
-    */
+    if (yar > 19)
+    {
+      yar = 0;
+    }
+    LedOne(yar);
+    ++yar;
+    
     Buzzer();
   }
 }
