@@ -92,7 +92,7 @@ long EEPROMReadlong(long address)
 //LED режим капля
 void LedOne()
 {
-  if ((millis() - timeLed) > 10)
+  if ((millis() - timeLed) > 10 && false)
   {
     timeLed = millis();
     if (indexLed > 0 && indexLed < 5 || (indexLed - 1) >= WIRE_PINS_COUNT_LED)
@@ -113,7 +113,7 @@ void LedOne()
       case 8: analogWrite(led[(indexLed - 4)].Pin(), LOW);
     }
     ++indexLed;
-    if(indexLed > (WIRE_PINS_COUNT_LED+3))
+    if (indexLed > (WIRE_PINS_COUNT_LED + 3))
     {
       indexLed = 0;
       sw = 0;
@@ -199,10 +199,13 @@ void ButtonRead()
 }
 
 //Чтение пароля
-void ReadPassword()
+void ReadPassword(bool writePass = true)
 {
   static uint8_t stringLength = 0;
   static long pass = 0;
+
+  if (!writePass) //Сброс введенного пароля
+    pass = 0;
 
   char key = keypad.getKey();
   if (key == NO_KEY)
@@ -235,7 +238,7 @@ void ReadPassword()
     pass = 0;
     stringLength = 0;
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  ????????"));
+    lcd.print(F("Pass:  ???????? "));
   }
   if (key == '#' && pass > 0)
   {
@@ -272,7 +275,7 @@ void ReadPassword()
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);
-      lcd.print(F("Pass:  ????????"));
+      lcd.print(F("Pass:  ???????? "));
       if (audioConnected)
       {
         audio.play(3);
@@ -347,28 +350,26 @@ bool ProcessBluetooth()
 
     if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
     {
-      if (!ViewMenuPass)
-      {
-        lcd.setCursor(0, 1);
-        lcd.print(F("Pass:  ????????"));
-        ViewMenuPass = true;
-        timeMenuPass = millis();
-      }
+      lcd.setCursor(0, 1);
+      lcd.print(F("Pass:  ???????? "));
+      ViewSetupPass = true;
+      timeSetupPass = millis();
       return true;
     }
+
     if (name == VALID_NAME_NETRAL && (int)&rssi > MIN_VALID_RSSI)
     {
       if (!ViewMenuPass)
       {
         lcd.setCursor(0, 1);
-        lcd.print(F("                "));
-        lcd.print(F("Pass:  00000000"));
-        lcd.setCursor(8, 1);
+        lcd.print(F("Pass:  00000000 "));
+        lcd.setCursor(7, 1);
         lcd.print(setupGame[15]);
         ViewMenuPass = true;
         timeMenuPass = millis();
       }
     }
+
     return false;
   }
 }
@@ -460,17 +461,18 @@ bool ViewZeroString()
         }
         LedOne(yar);
     */
-
-    for (int i = 0; i < 3; i++) {
-      analogWrite(led[0].Pin(), 60);
-      delay(5);
-      analogWrite(led[1].Pin(), 125);
-      delay(5);
-      analogWrite(led[2].Pin(), 190);
-      delay(5);
-      analogWrite(led[3].Pin(), 255);
-      delay(5);
-    }
+    /*
+        for (int i = 0; i < 3; i++) {
+          analogWrite(led[0].Pin(), 60);
+          delay(5);
+          analogWrite(led[1].Pin(), 125);
+          delay(5);
+          analogWrite(led[2].Pin(), 190);
+          delay(5);
+          analogWrite(led[3].Pin(), 255);
+          delay(5);
+        }
+    */
     /*
         for (int i = 0; i <= 255; i++) {
           for (int tr = 0; tr < WIRE_PINS_COUNT_LED; ++tr) {
@@ -511,16 +513,21 @@ void timerGame()
     }
     else
     {
-      if (ViewMenuPass && (millis() - timeMenuPass) > 3000)
+      if (ViewMenuPass && ((millis() - timeMenuPass) > 1000))
       {
         lcd.setCursor(0, 1);
         lcd.print(F("****************"));
         ViewMenuPass = false;
       }
     }
-    if (ViewMenuPass)
+    if (ViewSetupPass)
     {
       ReadPassword();   //Ввод пароля
+      if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 1000))
+      {
+        ViewSetupPass = false;
+        ReadPassword(false);
+      }
     }
   }
   else

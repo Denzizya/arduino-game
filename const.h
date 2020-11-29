@@ -52,6 +52,8 @@ uint8_t audioConnected = 0;
 /***MENU***/
 long timeMenuPass;
 bool ViewMenuPass = false;
+long timeSetupPass;
+bool ViewSetupPass = false;
 
 /*** RELE ***/
 #define RELAY_PINS 42

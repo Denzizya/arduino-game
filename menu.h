@@ -222,7 +222,7 @@ void ShowTimerGame()
   else
   {
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  ????????"));
+    lcd.print(F("Pass:  ???????? "));
   }
   setupTimeLastMillis = millis();
   if (audioConnected)
@@ -850,7 +850,8 @@ void SetupAnyPress()
     ++cellEeprom;
     delay(1);
   }
-  
+
+  ++globalState;
   setupTimeLastMillis = millis();
   ShowTimerGame();
 }
