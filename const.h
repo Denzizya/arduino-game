@@ -27,8 +27,8 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 #define VALID_NAME F("BOMB_POINT")  //Что ищем
 #define VALID_NAME_NETRAL F("BOMB_NETRAL")  //Что ищем
 
-long timeReadScan = millis();
-long timeScan = millis();
+unsigned long timeReadScan = millis();  //Перезапуск сканирования
+unsigned long timeScan = millis();      //Задержка на сканирование
 
 Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
 
@@ -50,10 +50,10 @@ uint8_t audioConnected = 0;
 
 //==========================================================================//
 /***MENU***/
-long timeMenuPass;
-bool ViewMenuPass = false;
-long timeSetupPass;
-bool ViewSetupPass = false;
+unsigned long timeMenuPass; //Вывод меню блютуза нейтрали с паролем
+bool ViewMenuPass = false;  //Вывод меню блютуза нейтрали с паролем
+unsigned long timeSetupPass;//Вывод меню ввода пароля
+bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** RELE ***/
 #define RELAY_PINS 42

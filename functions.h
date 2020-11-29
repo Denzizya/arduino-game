@@ -199,13 +199,10 @@ void ButtonRead()
 }
 
 //Чтение пароля
-void ReadPassword(bool writePass = true)
+bool ReadPassword(bool writePass = true)
 {
   static uint8_t stringLength = 0;
   static long pass = 0;
-
-  if (!writePass) //Сброс введенного пароля
-    pass = 0;
 
   char key = keypad.getKey();
   if (key == NO_KEY)
@@ -229,16 +226,16 @@ void ReadPassword(bool writePass = true)
         case 0: pass += (key - 48) * 3;
       }
       lcd.setCursor(stringLength + cursorOneStr, 1);
-      lcd.print(F("*"));
+      lcd.print(key);
       ++stringLength;
     }
   }
-  if (key == '*')
+  if (key == '*' || !writePass)
   {
     pass = 0;
     stringLength = 0;
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  00000000 "));
+    lcd.print(F("Pas3:  00000000 "));
   }
   if (key == '#' && pass > 0)
   {
@@ -275,7 +272,7 @@ void ReadPassword(bool writePass = true)
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);
-      lcd.print(F("Pass:  00000000 "));
+      lcd.print(F("Pas4:  00000000 "));
       if (audioConnected)
       {
         audio.play(3);
@@ -322,14 +319,14 @@ String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 //Поиск устройств
 bool BluetoothSerch()
 {
-  if (millis() - timeScan > SCAN_DELAY_MS)
+  if ((millis() - timeScan) > SCAN_DELAY_MS)
   {
     Serial2.print(F("AT+SCAN1"));
     timeScan = millis();
     timeReadScan = millis();
   }
 
-  if (millis() - timeReadScan > 10)
+  if ((millis() - timeReadScan) > 10)
   {
     timeReadScan = millis();
     String s = ReadFromStream(Serial2);
@@ -350,9 +347,12 @@ bool BluetoothSerch()
 
     if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
     {
-      lcd.setCursor(0, 1);
-      lcd.print(F("Pass:  00000000 "));
-      ViewSetupPass = true;
+      if (!ViewSetupPass)
+      {
+        lcd.setCursor(0, 1);
+        lcd.print(F("Pas2:  00000000 "));
+        ViewSetupPass = true;
+      }
       timeSetupPass = millis();
       return true;
     }
@@ -362,12 +362,13 @@ bool BluetoothSerch()
       if (!ViewMenuPass)
       {
         lcd.setCursor(0, 1);
-        lcd.print(F("Pass:  00000000 "));
+        lcd.print(F("Pas1:  00000000 "));
         lcd.setCursor(7, 1);
         lcd.print(setupGame[15]);
-        ViewMenuPass = true;
-        timeMenuPass = millis();
       }
+
+      ViewMenuPass = true;
+      timeMenuPass = millis();
     }
 
     return false;
@@ -430,7 +431,7 @@ void Buzzer()
 //===============================================================================
 
 //Отображение остчета времени
-bool ViewZeroString()
+void ViewZeroString()
 {
   if ((millis() - setupTimeLastMillis) > speedTime)
   {
@@ -500,25 +501,30 @@ void timerGame()
       {
         globalState += 2;
       }
+      else
+      {
+        ReadPassword();   //Ввод пароля
+      }
     }
     else
     {
-      if (ViewMenuPass && ((millis() - timeMenuPass) > 1000))
+      if (ViewSetupPass && !ViewMenuPass)
       {
-        lcd.setCursor(0, 1);
-        lcd.print(F("****************"));
-        ViewMenuPass = false;
-      }
-
-      if (ViewSetupPass)
-      {
-        ReadPassword();   //Ввод пароля
-        if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 3000))
+        if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 1000))
         {
           lcd.setCursor(0, 1);
           lcd.print(F("****************"));
           ViewSetupPass = false;
           ReadPassword(false);
+        }
+      }
+      else if (ViewMenuPass && !ViewSetupPass)
+      {
+        if ((millis() - timeMenuPass) > (SCAN_DELAY_MS + 1000))
+        {
+          lcd.setCursor(0, 1);
+          lcd.print(F("****************"));
+          ViewMenuPass = false;
         }
       }
     }
