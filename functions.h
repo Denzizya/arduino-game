@@ -238,7 +238,7 @@ void ReadPassword(bool writePass = true)
     pass = 0;
     stringLength = 0;
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  ???????? "));
+    lcd.print(F("Pass:  00000000 "));
   }
   if (key == '#' && pass > 0)
   {
@@ -275,7 +275,7 @@ void ReadPassword(bool writePass = true)
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);
-      lcd.print(F("Pass:  ???????? "));
+      lcd.print(F("Pass:  00000000 "));
       if (audioConnected)
       {
         audio.play(3);
@@ -320,7 +320,7 @@ String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
 }
 
 //Поиск устройств
-bool ProcessBluetooth()
+bool BluetoothSerch()
 {
   if (millis() - timeScan > SCAN_DELAY_MS)
   {
@@ -351,7 +351,7 @@ bool ProcessBluetooth()
     if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
     {
       lcd.setCursor(0, 1);
-      lcd.print(F("Pass:  ???????? "));
+      lcd.print(F("Pass:  00000000 "));
       ViewSetupPass = true;
       timeSetupPass = millis();
       return true;
@@ -374,16 +374,6 @@ bool ProcessBluetooth()
   }
 }
 
-bool BluetoothSerch()
-{
-  static bool state = false;
-
-  if (ProcessBluetooth())
-  {
-    state = true;
-  }
-  return state;
-}
 //===============================================================================
 
 //Акселерометр
@@ -519,14 +509,17 @@ void timerGame()
         lcd.print(F("****************"));
         ViewMenuPass = false;
       }
-    }
-    if (ViewSetupPass)
-    {
-      ReadPassword();   //Ввод пароля
-      if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 1000))
+
+      if (ViewSetupPass)
       {
-        ViewSetupPass = false;
-        ReadPassword(false);
+        ReadPassword();   //Ввод пароля
+        if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 3000))
+        {
+          lcd.setCursor(0, 1);
+          lcd.print(F("****************"));
+          ViewSetupPass = false;
+          ReadPassword(false);
+        }
       }
     }
   }

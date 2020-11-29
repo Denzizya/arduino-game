@@ -222,7 +222,7 @@ void ShowTimerGame()
   else
   {
     lcd.setCursor(0, 1);
-    lcd.print(F("Pass:  ???????? "));
+    lcd.print(F("Pass:  00000000 "));
   }
   setupTimeLastMillis = millis();
   if (audioConnected)
