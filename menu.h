@@ -845,6 +845,7 @@ void SetupAnyPress()
     ++cellEeprom;
     delay(1);
   }
+  EEPROMWritelong(adress, atoi(viewPassword.c_str()));
 
   ++globalState;
   setupTimeLastMillis = millis();

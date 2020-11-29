@@ -104,6 +104,7 @@ void setup()
       ++cellEeprom;
       delay(1);
     }
+    viewPassword = EEPROMReadlong(adress);
     globalState = 15;
     ShowSave();    //Меню сохраненные настройки
   }

@@ -92,7 +92,7 @@ long EEPROMReadlong(long address)
 //LED режим капля
 void LedOne()
 {
-  if ((millis() - timeLed) > 20)
+  if ((millis() - timeLed) > 10)
   {
     timeLed = millis();
     if (indexLed > 0 && indexLed < 5 || (indexLed - 1) >= WIRE_PINS_COUNT_LED)
@@ -113,7 +113,7 @@ void LedOne()
       case 8: analogWrite(led[(indexLed - 4)].Pin(), LOW);
     }
     ++indexLed;
-    if(indexLed > WIRE_PINS_COUNT_LED)
+    if(indexLed > (WIRE_PINS_COUNT_LED+3))
     {
       indexLed = 0;
       sw = 0;
@@ -361,6 +361,7 @@ bool ProcessBluetooth()
       if (!ViewMenuPass)
       {
         lcd.setCursor(0, 1);
+        lcd.print(F("                "));
         lcd.print(F("Pass:"));
         lcd.setCursor(7, 1);
         lcd.print(viewPassword);
