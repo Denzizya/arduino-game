@@ -128,6 +128,94 @@ String ConstructTimeString(unsigned long secs)
   uint8_t hours = secs / 3600;
   uint8_t minutes = secs / 60 - hours * 60;
   uint8_t seconds = secs % 60;
+  if (audioConnected)
+  {
+    if (minutes == 60 && timeMin60)
+    {
+      audio.play(16);
+      timeMin60 = true;
+    }
+    else if (minutes == 50 && timeMin50)
+    {
+      audio.play(17);
+      timeMin50 = true;
+    }
+    else if (minutes == 40 && timeMin40)
+    {
+      audio.play(18);
+      bool timeMin40 = false;
+    }
+    else if (minutes == 30 && timeMin30)
+    {
+      audio.play(19);
+      bool timeMin30 = false;
+    }
+    else if (minutes == 20 && timeMin20)
+    {
+      audio.play(20);
+      bool timeMin20 = false;
+    }
+    else if (minutes == 15 && timeMin15)
+    {
+      audio.play(21);
+      bool timeMin15 = false;
+    }
+    else if (minutes == 10 && timeMin10)
+    {
+      audio.play(22);
+      bool timeMin10 = false;
+    }
+    else if (minutes == 5 && timeMin5)
+    {
+      audio.play(23);
+      bool timeMin5 = false;
+    }
+    else if (minutes == 4 && timeMin4)
+    {
+      audio.play(24);
+      bool timeMin4 = false;
+    }
+    else if (minutes == 3 && timeMin3)
+    {
+      audio.play(25);
+      bool timeMin3 = false;
+    }
+    else if (minutes == 2 && timeMin2)
+    {
+      audio.play(26);
+      bool timeMin2 = false;
+    }
+    else if (minutes == 1 && timeMin1)
+    {
+      audio.play(27);
+      bool timeMin1 = false;
+    }
+    else if (seconds == 30 && timeSec30)
+    {
+      audio.play(28);
+      bool timeSec30 = false;
+    }
+    else if (seconds == 20 && timeSec20)
+    {
+      audio.play(29);
+      bool timeSec20 = false;
+    }
+    else if (seconds == 15 && timeSec15)
+    {
+      audio.play(30);
+      bool timeSec15 = false;
+    }
+    else if (seconds == 10 && timeSec10)
+    {
+      audio.play(31);
+      bool timeSec10 = false;
+    }
+    else if (seconds == 5 && timeSec5)
+    {
+      audio.play(32);
+      bool timeSec5 = false;
+    }
+  }
 
   char str[9];
   sprintf(str, "%02d", hours);
@@ -204,6 +292,10 @@ void ButtonRead()
 
   if (!wires[12].Value()) //Ключь
   {
+    if (audioConnected)
+    {
+      audio.play(33);
+    }
     globalState += 2;
   }
 }
@@ -301,7 +393,7 @@ bool ReadPassword(bool writePass = true)
 
 //==============================================================
 //Чтение данных с блютуз
-String ReadFromStream(Stream &stream)
+String ReadFromStream(Stream & stream)
 {
   String ret{};
   if (stream.available())
@@ -316,7 +408,7 @@ String ReadFromStream(Stream &stream)
 }
 
 //Поиск в строк в данных
-String ExtractSubstring(const String &s, char separator, unsigned int startIdx)
+String ExtractSubstring(const String & s, char separator, unsigned int startIdx)
 {
   auto endIdx = s.indexOf(separator, startIdx);
   if (~endIdx)

@@ -241,6 +241,9 @@ void GameOver()
   lcd.print(F("                "));
   lcd.setCursor(3, 1);
   lcd.print(F("Game Over!"));
+  digitalWrite(RELAY_GAME_OVER, ON);
+  delay(30000);
+  digitalWrite(RELAY_GAME_OVER, OFF);
   globalState += 2;
 }
 

@@ -59,6 +59,7 @@ bool ViewSetupPass = false; //Вывод меню ввода пароля
 #define RELAY_PINS 42
 #define ON  LOW
 #define OFF HIGH
+#define RELAY_GAME_OVER A11
 
 /*** BUZZER ***/
 #define BUZZER_PIN 13
@@ -83,3 +84,23 @@ uint8_t cursorOneStr = 0;   //Курсор первой строки
 long timeLed;     
 uint8_t indexLed = 0;
 uint8_t sw = 0; //Позиция яркой капли
+
+/***PLAY TIME***/
+bool timeMin60 = false;
+bool timeMin50 = false;
+bool timeMin40 = false;
+bool timeMin30 = false;
+bool timeMin20 = false;
+bool timeMin15 = false;
+bool timeMin10 = false;
+bool timeMin5 = false;
+bool timeMin4 = false;
+bool timeMin3 = false;
+bool timeMin2 = false;
+bool timeMin1 = false;
+
+bool timeSec30 = false;
+bool timeSec20 = false;
+bool timeSec15 = false;
+bool timeSec10 = false;
+bool timeSec5 = false;

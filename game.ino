@@ -79,7 +79,9 @@ void setup()
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
   digitalWrite(RELAY_PINS, OFF);
-
+  pinMode(RELAY_GAME_OVER, OUTPUT);
+  digitalWrite(RELAY_GAME_OVER, OFF);
+ 
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
 
@@ -111,7 +113,7 @@ void setup()
 
     //Чувствительность акселерометра
     acsselButton = setupGame[10];
-    
+
     globalState = 15;
     ShowSave();    //Меню сохраненные настройки
   }
