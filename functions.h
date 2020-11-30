@@ -128,92 +128,93 @@ String ConstructTimeString(unsigned long secs)
   uint8_t hours = secs / 3600;
   uint8_t minutes = secs / 60 - hours * 60;
   uint8_t seconds = secs % 60;
+
   if (audioConnected)
   {
-    if (minutes == 60 && timeMin60)
+    if (hours == 1 && minutes == 0 && seconds == 0 && !timeMin60)
     {
       audio.play(16);
       timeMin60 = true;
     }
-    else if (minutes == 50 && timeMin50)
+    else if (hours == 0 && minutes == 50 && seconds == 0 && !timeMin50)
     {
       audio.play(17);
       timeMin50 = true;
     }
-    else if (minutes == 40 && timeMin40)
+    else if (hours == 0 && minutes == 40 && seconds == 0 && !timeMin40)
     {
       audio.play(18);
-      bool timeMin40 = false;
+      bool timeMin40 = true;
     }
-    else if (minutes == 30 && timeMin30)
+    else if (hours == 0 && minutes == 30 && seconds == 0 && !timeMin30)
     {
       audio.play(19);
-      bool timeMin30 = false;
+      bool timeMin30 = true;
     }
-    else if (minutes == 20 && timeMin20)
+    else if (hours == 0 && minutes == 20 && seconds == 0 && !timeMin20)
     {
       audio.play(20);
-      bool timeMin20 = false;
+      bool timeMin20 = true;
     }
-    else if (minutes == 15 && timeMin15)
+    else if (hours == 0 && minutes == 15 && seconds == 0 && !timeMin15)
     {
       audio.play(21);
-      bool timeMin15 = false;
+      bool timeMin15 = true;
     }
-    else if (minutes == 10 && timeMin10)
+    else if (hours == 0 && minutes == 10 && seconds == 0 && !timeMin10)
     {
       audio.play(22);
-      bool timeMin10 = false;
+      bool timeMin10 = true;
     }
-    else if (minutes == 5 && timeMin5)
+    else if (hours == 0 && minutes == 5 && seconds == 0 && !timeMin5)
     {
       audio.play(23);
-      bool timeMin5 = false;
+      bool timeMin5 = true;
     }
-    else if (minutes == 4 && timeMin4)
+    else if (hours == 0 && minutes == 4 && seconds == 0 && !timeMin4)
     {
       audio.play(24);
-      bool timeMin4 = false;
+      bool timeMin4 = true;
     }
-    else if (minutes == 3 && timeMin3)
+    else if (minutes == 3 && seconds == 0 && !timeMin3)
     {
       audio.play(25);
-      bool timeMin3 = false;
+      bool timeMin3 = true;
     }
-    else if (minutes == 2 && timeMin2)
+    else if (hours == 0 && minutes == 2 && seconds == 0 && !timeMin2)
     {
       audio.play(26);
-      bool timeMin2 = false;
+      bool timeMin2 = true;
     }
-    else if (minutes == 1 && timeMin1)
+    else if (hours == 0 && minutes == 1 && seconds == 0 && !timeMin1)
     {
       audio.play(27);
-      bool timeMin1 = false;
+      bool timeMin1 = true;
     }
-    else if (seconds == 30 && timeSec30)
+    else if (hours == 0 && minutes == 0 && seconds == 30 && !timeSec30)
     {
       audio.play(28);
-      bool timeSec30 = false;
+      bool timeSec30 = true;
     }
-    else if (seconds == 20 && timeSec20)
+    else if (hours == 0 && minutes == 0 && seconds == 20 && !timeSec20)
     {
       audio.play(29);
-      bool timeSec20 = false;
+      bool timeSec20 = true;
     }
-    else if (seconds == 15 && timeSec15)
+    else if (hours == 0 && minutes == 0 && seconds == 15 && !timeSec15)
     {
       audio.play(30);
-      bool timeSec15 = false;
+      bool timeSec15 = true;
     }
-    else if (seconds == 10 && timeSec10)
+    else if (hours == 0 && minutes == 0 && seconds == 10 && !timeSec10)
     {
       audio.play(31);
-      bool timeSec10 = false;
+      bool timeSec10 = true;
     }
-    else if (seconds == 5 && timeSec5)
+    else if (hours == 0 && minutes == 0 && seconds == 5 && !timeSec5)
     {
       audio.play(32);
-      bool timeSec5 = false;
+      bool timeSec5 = true;
     }
   }
 
