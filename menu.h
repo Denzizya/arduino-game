@@ -249,6 +249,10 @@ void GameWin()
 {
   lcd.setCursor(0, 1);
   lcd.print(F("Bomb Deactiva..."));
+  if (audioConnected)
+  {
+    audio.play(8);
+  }
   ++globalState;
 }
 //=================================================================================================================//
@@ -830,15 +834,22 @@ void SetupSave()
 void SetupAnyPress()
 {
   char key = keypad.getKey();
-  if (key == NO_KEY)
+
+  if (wires[10].Value() || wires[11].Value())
+  {
+    gameButton = true;
+  }
+  else if (key == NO_KEY)
+  {
     return;
+  }
 
   rele();
 
   int cellEeprom = 0;
   for (uint8_t i = 0; i < adress; ++i)
   {
-    if (i == 0 || i == 1 || i == (adress-1))
+    if (i == 0 || i == 1 || i == (adress - 1))
     {
       EEPROMWritelong(cellEeprom, setupGame[i]);
       cellEeprom += 3;

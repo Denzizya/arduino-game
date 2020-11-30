@@ -14,7 +14,7 @@ char KEYPAD_KEYS[KEYPAD_ROWS][KEYPAD_COLS] = {
 
 uint8_t KEYPAD_COL_PINS[KEYPAD_COLS] = {A2, A1, A0};
 uint8_t KEYPAD_ROW_PINS[KEYPAD_ROWS] = {A6, A5, A4, A3};
-uint8_t WIRE_PINS_BUTTON[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40};
+uint8_t WIRE_PINS_BUTTON[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, A8, A9, A10};
 
 /*** LED ***/
 uint8_t WIRE_PINS_LED[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 44, 45, 46};
@@ -41,6 +41,7 @@ MPU6050 mpu(0x68);
 int16_t ax, ay, az;
 long timeAccel;
 bool speedAccel = false;
+int acsselButton;
 
 
 //Плеер 
@@ -61,6 +62,9 @@ bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** BUZZER ***/
 #define BUZZER_PIN 13
+
+/***Game BUTTON***/
+bool gameButton = false;
 
 /*** Timer ***/
 unsigned long setupTimeLastMillis;	//Метка времени

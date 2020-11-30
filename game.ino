@@ -101,7 +101,7 @@ void setup()
       {
         setupGame[i] = EEPROM.read(cellEeprom);
       }
-      
+
       Serial.println("====LOAD====");
       Serial.println(setupGame[i]);
 
@@ -109,6 +109,9 @@ void setup()
       delay(1);
     }
 
+    //Чувствительность акселерометра
+    acsselButton = setupGame[10];
+    
     globalState = 15;
     ShowSave();    //Меню сохраненные настройки
   }

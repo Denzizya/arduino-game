@@ -161,10 +161,6 @@ void ButtonRead()
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
         globalState += 2;
-        if (audioConnected)
-        {
-          audio.play(8);
-        }
       }
       else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
@@ -195,6 +191,20 @@ void ButtonRead()
       rele();
       w.MarkProcessed();
     }
+  }
+
+  if (wires[10].Value() && wires[11].Value() && gameButton) //Левая и правая кнопка
+  {
+    acsselButton = (int)(setupGame[10] / 3);
+  }
+  else
+  {
+    acsselButton = setupGame[10];
+  }
+
+  if (wires[12].Value()) //Ключь
+  {
+    globalState += 2;
   }
 }
 
@@ -235,7 +245,7 @@ bool ReadPassword(bool writePass = true)
     pass = 0;
     stringLength = 0;
     lcd.setCursor(0, 1);
-    lcd.print(F("Pas3:  00000000 "));
+    lcd.print(F("Pass:  00000000 "));
   }
   if (key == '#' && pass > 0)
   {
@@ -272,7 +282,7 @@ bool ReadPassword(bool writePass = true)
       pass = 0;
       stringLength = 0;
       lcd.setCursor(0, 1);
-      lcd.print(F("Pas4:  00000000 "));
+      lcd.print(F("Pass:  00000000 "));
       if (audioConnected)
       {
         audio.play(3);
@@ -350,8 +360,12 @@ bool BluetoothSerch()
       if (!ViewSetupPass)
       {
         lcd.setCursor(0, 1);
-        lcd.print(F("Pas2:  00000000 "));
+        lcd.print(F("Pass:  00000000 "));
         ViewSetupPass = true;
+        if (audioConnected)
+        {
+          audio.play(12);
+        }
       }
       timePass = millis();
       return true;
@@ -362,9 +376,13 @@ bool BluetoothSerch()
       if (!ViewMenuPass)
       {
         lcd.setCursor(0, 1);
-        lcd.print(F("Pas1:  00000000 "));
+        lcd.print(F("Pass:  00000000 "));
         lcd.setCursor(7, 1);
         lcd.print(setupGame[15]);
+        if (audioConnected)
+        {
+          audio.play(13);
+        }
       }
 
       ViewMenuPass = true;
@@ -406,7 +424,7 @@ void CheckAccel()
   ay = y;
   az = z;
   auto length = sqrt(dx * dx + dy * dy + dz * dz) / 1000;
-  if (length > setupGame[10]) //Чувствотельность
+  if (length > acsselButton) //Чувствотельность
   {
     speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
@@ -518,7 +536,7 @@ void timerGame()
           ViewMenuPass = false;
           ReadPassword(false);
         }
-        else if(ViewSetupPass)
+        else if (ViewSetupPass)
         {
           ReadPassword();
         }
