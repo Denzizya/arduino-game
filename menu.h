@@ -835,11 +835,7 @@ void SetupAnyPress()
 {
   char key = keypad.getKey();
 
-  if (wires[10].Value() || wires[11].Value())
-  {
-    gameButton = true;
-  }
-  else if (key == NO_KEY)
+  if (key == NO_KEY)
   {
     return;
   }

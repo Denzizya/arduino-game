@@ -193,16 +193,16 @@ void ButtonRead()
     }
   }
 
-  if (wires[10].Value() && wires[11].Value() && gameButton) //Левая и правая кнопка
+  if (!wires[10].Value() && !wires[11].Value()) //Левая и правая кнопка
   {
-    acsselButton = (int)(setupGame[10] / 3);
+    acsselButton = (int)(setupGame[10] - (setupGame[10] * 0.3));
   }
   else
   {
     acsselButton = setupGame[10];
   }
 
-  if (wires[12].Value()) //Ключь
+  if (!wires[12].Value()) //Ключь
   {
     globalState += 2;
   }
@@ -429,9 +429,10 @@ void CheckAccel()
     speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
-    if (audioConnected)
+    if (audioConnected && ((millis() - playAccel) > 1000))
     {
       audio.play(2);
+      playAccel = millis();
     }
   }
 }
@@ -511,7 +512,11 @@ void timerGame()
     CheckAccel();     //Акселерометр
   }
 
-  if (setupGame[13] == 1)
+  if (setupGame[13] == 0)
+  {
+    ReadPassword();   //Ввод пароля
+  }
+  else
   {
     if (BluetoothSerch()) //Поиск Блютуз
     {
@@ -542,10 +547,6 @@ void timerGame()
         }
       }
     }
-  }
-  else
-  {
-    ReadPassword();   //Ввод пароля
   }
 
   //Время вышло.

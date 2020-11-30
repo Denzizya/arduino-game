@@ -42,7 +42,7 @@ int16_t ax, ay, az;
 long timeAccel;
 bool speedAccel = false;
 int acsselButton;
-
+unsigned long playAccel;
 
 //Плеер 
 DFRobotDFPlayerMini audio{};
@@ -52,7 +52,7 @@ uint8_t audioConnected = 0;
 //==========================================================================//
 /***MENU***/
 bool ViewMenuPass = false;  //Вывод меню блютуза нейтрали с паролем
-unsigned long timePass;//Вывод меню ввода пароля
+unsigned long timePass;     //Вывод меню ввода пароля
 bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** RELE ***/
@@ -62,9 +62,6 @@ bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** BUZZER ***/
 #define BUZZER_PIN 13
-
-/***Game BUTTON***/
-bool gameButton = false;
 
 /*** Timer ***/
 unsigned long setupTimeLastMillis;	//Метка времени
