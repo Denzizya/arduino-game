@@ -50,9 +50,8 @@ uint8_t audioConnected = 0;
 
 //==========================================================================//
 /***MENU***/
-unsigned long timeMenuPass; //Вывод меню блютуза нейтрали с паролем
 bool ViewMenuPass = false;  //Вывод меню блютуза нейтрали с паролем
-unsigned long timeSetupPass;//Вывод меню ввода пароля
+unsigned long timePass;//Вывод меню ввода пароля
 bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** RELE ***/

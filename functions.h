@@ -353,7 +353,7 @@ bool BluetoothSerch()
         lcd.print(F("Pas2:  00000000 "));
         ViewSetupPass = true;
       }
-      timeSetupPass = millis();
+      timePass = millis();
       return true;
     }
 
@@ -368,7 +368,7 @@ bool BluetoothSerch()
       }
 
       ViewMenuPass = true;
-      timeMenuPass = millis();
+      timePass = millis();
     }
 
     return false;
@@ -508,23 +508,19 @@ void timerGame()
     }
     else
     {
-      if (ViewSetupPass && !ViewMenuPass)
+      if (ViewSetupPass || ViewMenuPass)
       {
-        if ((millis() - timeSetupPass) > (SCAN_DELAY_MS + 1000))
+        if ((millis() - timePass) > (SCAN_DELAY_MS + 1000))
         {
           lcd.setCursor(0, 1);
           lcd.print(F("****************"));
           ViewSetupPass = false;
+          ViewMenuPass = false;
           ReadPassword(false);
         }
-      }
-      else if (ViewMenuPass && !ViewSetupPass)
-      {
-        if ((millis() - timeMenuPass) > (SCAN_DELAY_MS + 1000))
+        else if(ViewSetupPass)
         {
-          lcd.setCursor(0, 1);
-          lcd.print(F("****************"));
-          ViewMenuPass = false;
+          ReadPassword();
         }
       }
     }
