@@ -5,8 +5,6 @@
 
 void setup()
 {
-
-  Serial.begin(115200);
   Serial1.begin(9600); //Плеер
 
   //Акселерометр
@@ -17,9 +15,6 @@ void setup()
   lcd.begin();
   lcd.backlight();
 
-#if DEVICE == 1
-
-#else
   //Определение блютуз
   Serial2.begin(BLUETOOTH_BAUDRATE);
   Serial2.print("AT+HOSTEN1");
@@ -35,7 +30,6 @@ void setup()
     while (true) {}
   }
   Serial2.print("AT+POWR0");
-#endif
 
   // Определение параметра подавления дребезга контактов на клавиатуре
   keypad.setDebounceTime(frequency_button);
@@ -45,16 +39,6 @@ void setup()
   {
     wires[i].SetPin(WIRE_PINS_BUTTON[i]);
   }
-
-#if DEVICE == 1
-
-#else
-  //LED
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT_LED; ++i)
-  {
-    led[i].SetPin(WIRE_PINS_LED[i]);
-  }
-#endif
 
   showHello();  //Запуск меню приветствия.
 
@@ -88,7 +72,6 @@ void setup()
   Serial2.print("AT+RST");
   delay(1200);
   ReadFromStream(Serial2);
-  Serial.println("Bluetooth is ready");
 
   if (EEPROM.read(0) != 255 && EEPROM.read(0) > 0)
   {
@@ -103,10 +86,6 @@ void setup()
       {
         setupGame[i] = EEPROM.read(cellEeprom);
       }
-
-      Serial.println("====LOAD====");
-      Serial.println(setupGame[i]);
-
       ++cellEeprom;
       delay(1);
     }
@@ -148,5 +127,4 @@ void loop()
     case 18: GameOver(); break;               //Конец игры Поражение
     case 19: GameWin(); break;                //Конец игры Победа
   }
-  if (globalState == 17) LedOne();
 }

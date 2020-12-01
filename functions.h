@@ -25,33 +25,6 @@ class WireSensor {
 };
 WireSensor wires[WIRE_PINS_COUNT_BUTTON];
 
-#if DEVICE == 1
-
-#else
-//LED индикация
-class LedIndication {
-  public:
-    LedIndication() : _pin{0} {};
-    void SetPin(uint8_t pin) {
-      _pin = pin;
-      pinMode(pin, OUTPUT);
-      digitalWrite(pin, LOW);
-    }
-    uint8_t Pin() const {
-      return _pin;
-    }
-    boolean On() const {
-      digitalWrite(_pin, HIGH);
-    }
-    boolean Off() const {
-      digitalWrite(_pin, LOW);
-    }
-  private:
-    uint8_t _pin;
-};
-LedIndication led[WIRE_PINS_COUNT_LED];
-#endif
-
 //Реле
 void rele()
 {
@@ -85,39 +58,6 @@ long EEPROMReadlong(long address)
 
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
-
-//LED режим капля
-void LedOne()
-{
-  if ((millis() - timeLed) > 20 && false)
-  {
-    timeLed = millis();
-    if (indexLed > 0 && indexLed < 5 || (indexLed - 1) >= WIRE_PINS_COUNT_LED)
-    {
-      ++sw;
-    }
-    switch (sw)
-    {
-      case 4: analogWrite(led[(indexLed - 4)].Pin(), LOW);
-      case 3: analogWrite(led[(indexLed - 3)].Pin(), 60);
-      case 2: analogWrite(led[(indexLed - 2)].Pin(), 125);
-      case 1: analogWrite(led[(indexLed - 1)].Pin(), 190);
-      case 0: analogWrite(led[indexLed].Pin(), 255); break;
-
-      case 5: analogWrite(led[(indexLed - 1)].Pin(), 190);
-      case 6: analogWrite(led[(indexLed - 2)].Pin(), 125);
-      case 7: analogWrite(led[(indexLed - 3)].Pin(), 60);
-      case 8: analogWrite(led[(indexLed - 4)].Pin(), LOW);
-    }
-    ++indexLed;
-    if (indexLed > (WIRE_PINS_COUNT_LED + 3))
-    {
-      indexLed = 0;
-      sw = 0;
-    }
-  }
-}
-
 
 //Секунды в строку (час:мин:сек)
 String ConstructTimeString(unsigned long secs)
@@ -247,7 +187,6 @@ void ButtonRead()
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
         globalState += 2;
-        Serial.println("Button");
       }
       else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
@@ -303,7 +242,6 @@ void ButtonRead()
       audio.play(33);
     }
     globalState += 2;
-    Serial.println("Key");
   }
 }
 
@@ -393,7 +331,6 @@ bool ReadPassword(bool writePass = true)
     else
     {
       globalState += 2; //Завершили игру Победа
-      Serial.println("Pass");
       if (audioConnected)
       {
         audio.play(4);
@@ -541,6 +478,7 @@ void CheckAccel()
 }
 
 //===============================================================================
+
 void Buzzer()
 {
   tone(BUZZER_PIN, 1800);
@@ -569,7 +507,8 @@ void ViewZeroString()
     Buzzer();
   }
 }
-//=====================================================================================//
+
+//===================================================================================
 
 void timerGame()
 {
@@ -592,7 +531,6 @@ void timerGame()
       if (setupGame[14] == 0)
       {
         globalState += 2;
-        Serial.println("Bluetooth");
       }
       else
       {
