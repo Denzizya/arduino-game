@@ -86,13 +86,10 @@ long EEPROMReadlong(long address)
   return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
 
-#if DEVICE == 1
-
-#else
 //LED режим капля
 void LedOne()
 {
-  if ((millis() - timeLed) > 10 && false)
+  if ((millis() - timeLed) > 20 && false)
   {
     timeLed = millis();
     if (indexLed > 0 && indexLed < 5 || (indexLed - 1) >= WIRE_PINS_COUNT_LED)
@@ -120,7 +117,7 @@ void LedOne()
     }
   }
 }
-#endif
+
 
 //Секунды в строку (час:мин:сек)
 String ConstructTimeString(unsigned long secs)
@@ -250,6 +247,7 @@ void ButtonRead()
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
         globalState += 2;
+        Serial.println("Button");
       }
       else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
@@ -271,7 +269,14 @@ void ButtonRead()
       }
       else
       {
-        setupGame[0] -= setupGame[4];
+        if (setupGame[0] >  setupGame[4])
+        {
+          setupGame[0] -= setupGame[4];
+        }
+        else
+        {
+          setupGame[0] = 0;
+        }
         if (audioConnected)
         {
           audio.play(9);
@@ -284,7 +289,7 @@ void ButtonRead()
 
   if (!wires[10].Value() && !wires[11].Value()) //Левая и правая кнопка
   {
-    acsselButton = (int)(setupGame[10] - (setupGame[10] * 0.3));
+    acsselButton = (int)(setupGame[10] + (setupGame[10] * 0.3));
   }
   else
   {
@@ -298,6 +303,7 @@ void ButtonRead()
       audio.play(33);
     }
     globalState += 2;
+    Serial.println("Key");
   }
 }
 
@@ -366,8 +372,11 @@ bool ReadPassword(bool writePass = true)
         ++globalState; //Завершили игру Поражение
       }
 
-      setupGame[0] -= 600;
-      if (setupGame[0] < 3)
+      if (setupGame[0] > 600)
+      {
+        setupGame[0] -= 600;
+      }
+      else
       {
         setupGame[0] = 2;
       }
@@ -384,6 +393,7 @@ bool ReadPassword(bool writePass = true)
     else
     {
       globalState += 2; //Завершили игру Победа
+      Serial.println("Pass");
       if (audioConnected)
       {
         audio.play(4);
@@ -519,7 +529,7 @@ void CheckAccel()
   auto length = sqrt(dx * dx + dy * dy + dz * dz) / 1000;
   if (length > acsselButton) //Чувствотельность
   {
-    speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
+    speedTime = (int)(speedTime + ((9 - setupGame[11]) * 1.3)); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
     if (audioConnected && ((millis() - playAccel) > 1000))
@@ -556,40 +566,6 @@ void ViewZeroString()
     {
       speedTime = 1000;
     }
-    /*
-        ++yar;
-        if (yar > WIRE_PINS_COUNT_LED)
-        {
-          yar = 0;
-        }
-        LedOne(yar);
-    */
-    /*
-        for (int i = 0; i < 3; i++) {
-          analogWrite(led[0].Pin(), 60);
-          delay(5);
-          analogWrite(led[1].Pin(), 125);
-          delay(5);
-          analogWrite(led[2].Pin(), 190);
-          delay(5);
-          analogWrite(led[3].Pin(), 255);
-          delay(5);
-        }
-    */
-    /*
-        for (int i = 0; i <= 255; i++) {
-          for (int tr = 0; tr < WIRE_PINS_COUNT_LED; ++tr) {
-            analogWrite(led[tr].Pin(), i);
-          }
-          delay(5);
-        }
-        for (int i = 255; i >= 0; i--) {
-          for (int tr = 0; tr < WIRE_PINS_COUNT_LED; ++tr) {
-            analogWrite(led[tr].Pin(), i);
-          }
-          delay(5); // ставим задержку для эффекта
-        }
-    */
     Buzzer();
   }
 }
@@ -616,6 +592,7 @@ void timerGame()
       if (setupGame[14] == 0)
       {
         globalState += 2;
+        Serial.println("Bluetooth");
       }
       else
       {
