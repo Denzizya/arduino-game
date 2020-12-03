@@ -5,6 +5,10 @@
 
 void setup()
 {
+#ifdef DEBUG_ENABLE
+  Serial.begin(115200);
+#endif
+
   Serial1.begin(9600); //Плеер
 
   //Акселерометр
@@ -65,7 +69,7 @@ void setup()
   digitalWrite(RELAY_PINS, OFF);
   pinMode(RELAY_GAME_OVER, OUTPUT);
   digitalWrite(RELAY_GAME_OVER, OFF);
- 
+
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
 

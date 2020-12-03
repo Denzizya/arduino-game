@@ -1,3 +1,11 @@
+#define DEBUG_ENABLE 1
+
+#ifdef DEBUG_ENABLE
+#define DEBUG(x) Serial.println(x)
+#else
+#define DEBUG(x)
+#endif
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 /*** Кнопки / Клавиатура ***/

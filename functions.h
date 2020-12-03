@@ -187,6 +187,7 @@ void ButtonRead()
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
         globalState += 2;
+        DEBUG("Button");
       }
       else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
       {
@@ -242,6 +243,7 @@ void ButtonRead()
       audio.play(33);
     }
     globalState += 2;
+    DEBUG("Key");
   }
 }
 
@@ -331,6 +333,7 @@ bool ReadPassword(bool writePass = true)
     else
     {
       globalState += 2; //Завершили игру Победа
+      DEBUG("Password");
       if (audioConnected)
       {
         audio.play(4);
@@ -531,6 +534,7 @@ void timerGame()
       if (setupGame[14] == 0)
       {
         globalState += 2;
+        DEBUG("Bluetooth POINT_BOMB");
       }
       else
       {
