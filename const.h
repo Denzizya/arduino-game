@@ -33,6 +33,7 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 #define VALID_NAME F("BOMB_POINT")  //Что ищем
 #define VALID_NAME_NETRAL F("BOMB_NETRAL")  //Что ищем
 
+unsigned long startBluetoothtMillis;    //Задержка при старте
 unsigned long timeReadScan = millis();  //Перезапуск сканирования
 unsigned long timeScan = millis();      //Задержка на сканирование
 

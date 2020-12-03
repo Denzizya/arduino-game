@@ -15,13 +15,35 @@ class WireSensor {
     uint8_t Processed() const {
       return _processed;
     }
-    boolean Value() const {
-      boolean _ret = ( digitalRead(_pin) && HIGH );
-      return _ret;
+    uint8_t Value() {
+      if (digitalRead(_pin) == HIGH && !_connect)
+      {
+        if (_frequency > _frequency_button)
+        {
+          _connect = true;
+          _frequency = 0;
+          return true;
+        }
+      }
+      if (_frequency > (frequency_button + frequency_button + 20))
+      {
+        _connect = false;
+        _frequency = 0;
+      }
+      if (digitalRead(_pin) == LOW)
+      {
+        _connect = false;
+        _frequency = 0;
+      }
+      ++_frequency;
+      return false;
     }
   private:
     uint8_t _pin;
     uint8_t _processed;
+    uint8_t _frequency_button = 20;
+    uint8_t _frequency = 0;
+    bool _connect = false;
 };
 WireSensor wires[WIRE_PINS_COUNT_BUTTON];
 
@@ -182,7 +204,7 @@ void ButtonRead()
   }
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (!w.Value() && !w.Processed())
+    if (w.Value() && !w.Processed())
     {
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
@@ -227,7 +249,7 @@ void ButtonRead()
     }
   }
 
-  if (!wires[10].Value() && !wires[11].Value()) //Левая и правая кнопка
+  if (wires[10].Value() && wires[11].Value()) //Левая и правая кнопка
   {
     acsselButton = (int)(setupGame[10] + (setupGame[10] * 0.3));
   }
@@ -236,7 +258,7 @@ void ButtonRead()
     acsselButton = setupGame[10];
   }
 
-  if (!wires[12].Value()) //Ключь
+  if (wires[12].Value()) //Ключь
   {
     if (audioConnected)
     {
@@ -385,7 +407,7 @@ bool BluetoothSerch()
     String s = ReadFromStream(Serial2);
 
     int pos = s.indexOf("=") + 1;
-    if (!pos)
+    if (!pos || ((millis() - startBluetoothtMillis) < 3000))
       return false;
 
     String mac = ExtractSubstring(s, ',', pos);
