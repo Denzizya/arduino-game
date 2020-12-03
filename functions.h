@@ -251,7 +251,7 @@ void ButtonRead()
 
   if (wires[10].Value() && wires[11].Value()) //Левая и правая кнопка
   {
-    acsselButton = (int)(setupGame[10] + (setupGame[10] * 0.3));
+    acsselButton = (int)(setupGame[10] + (setupGame[10] * 1.3));
   }
   else
   {
@@ -491,7 +491,7 @@ void CheckAccel()
   auto length = sqrt(dx * dx + dy * dy + dz * dz) / 1000;
   if (length > acsselButton) //Чувствотельность
   {
-    speedTime = (int)(speedTime + ((9 - setupGame[11]) * 1.3)); //Скорость отсчета
+    speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
     if (audioConnected && ((millis() - playAccel) > 1000))
