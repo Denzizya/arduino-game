@@ -12,6 +12,7 @@ void setup()
   Serial1.begin(9600); //Плеер
 
   //Акселерометр
+  Wire.begin();
   mpu.initialize();
   mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
 
