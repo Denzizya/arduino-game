@@ -16,7 +16,7 @@ class WireSensor {
       return _processed;
     }
     uint8_t Value() {
-      if (digitalRead(_pin) == HIGH && !_connect)
+      if (digitalRead(_pin) == LOW && !_connect)
       {
         if (_frequency > _frequency_button)
         {
@@ -25,12 +25,7 @@ class WireSensor {
           return true;
         }
       }
-      if (_frequency > (frequency_button + frequency_button + 20))
-      {
-        _connect = false;
-        _frequency = 0;
-      }
-      if (digitalRead(_pin) == LOW)
+      if (digitalRead(_pin) == HIGH)
       {
         _connect = false;
         _frequency = 0;
@@ -94,86 +89,103 @@ String ConstructTimeString(unsigned long secs)
     {
       audio.play(16);
       timeMin60 = true;
+      DEBUG("60 min -> trek: 16");
     }
     else if (hours == 0 && minutes == 50 && seconds == 0 && !timeMin50)
     {
       audio.play(17);
       timeMin50 = true;
+      DEBUG("50 min -> trek: 17");
     }
     else if (hours == 0 && minutes == 40 && seconds == 0 && !timeMin40)
     {
       audio.play(18);
       bool timeMin40 = true;
+      DEBUG("40 min -> trek: 18");
     }
     else if (hours == 0 && minutes == 30 && seconds == 0 && !timeMin30)
     {
       audio.play(19);
       bool timeMin30 = true;
+      DEBUG("30 min -> trek: 19");
     }
     else if (hours == 0 && minutes == 20 && seconds == 0 && !timeMin20)
     {
       audio.play(20);
       bool timeMin20 = true;
+      DEBUG("20 min -> trek: 20");
     }
     else if (hours == 0 && minutes == 15 && seconds == 0 && !timeMin15)
     {
       audio.play(21);
       bool timeMin15 = true;
+      DEBUG("15 min -> trek: 21");
     }
     else if (hours == 0 && minutes == 10 && seconds == 0 && !timeMin10)
     {
       audio.play(22);
       bool timeMin10 = true;
+      DEBUG("10 min -> trek: 22");
     }
     else if (hours == 0 && minutes == 5 && seconds == 0 && !timeMin5)
     {
       audio.play(23);
       bool timeMin5 = true;
+      DEBUG("5 min -> trek: 23");
     }
     else if (hours == 0 && minutes == 4 && seconds == 0 && !timeMin4)
     {
       audio.play(24);
       bool timeMin4 = true;
+      DEBUG("4 min -> trek: 24");
     }
-    else if (minutes == 3 && seconds == 0 && !timeMin3)
+    else if (hours == 0 && minutes == 3 && seconds == 0 && !timeMin3)
     {
       audio.play(25);
       bool timeMin3 = true;
+      DEBUG("3 min -> trek: 25");
     }
     else if (hours == 0 && minutes == 2 && seconds == 0 && !timeMin2)
     {
       audio.play(26);
       bool timeMin2 = true;
+      DEBUG("2 min -> trek: 26");
     }
     else if (hours == 0 && minutes == 1 && seconds == 0 && !timeMin1)
     {
       audio.play(27);
       bool timeMin1 = true;
+      DEBUG("1 min -> trek: 27");
     }
     else if (hours == 0 && minutes == 0 && seconds == 30 && !timeSec30)
     {
       audio.play(28);
       bool timeSec30 = true;
+      DEBUG("30 sec -> trek: 28");
     }
     else if (hours == 0 && minutes == 0 && seconds == 20 && !timeSec20)
     {
       audio.play(29);
       bool timeSec20 = true;
+      DEBUG("20 sec -> trek: 29");
     }
     else if (hours == 0 && minutes == 0 && seconds == 15 && !timeSec15)
     {
       audio.play(30);
       bool timeSec15 = true;
+      DEBUG("15 sec -> trek: 30");
     }
     else if (hours == 0 && minutes == 0 && seconds == 10 && !timeSec10)
     {
       audio.play(31);
       bool timeSec10 = true;
+      DEBUG("10 sec -> trek: 31");
     }
     else if (hours == 0 && minutes == 0 && seconds == 5 && !timeSec5)
     {
       audio.play(32);
       bool timeSec5 = true;
+      DEBUG("5 sec -> trek: 32");
     }
   }
 
@@ -202,12 +214,16 @@ void ButtonRead()
     }
     setupMiddleTimeMillis = millis();
   }
-  for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
+  for (uint8_t i = 0; i < (WIRE_PINS_COUNT_BUTTON - 3); ++i) {
     auto &w = wires[i];
     if (w.Value() && !w.Processed())
     {
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
+        if (audioConnected)
+        {
+          audio.play(33);
+        }
         globalState += 2;
         DEBUG("Button");
       }
@@ -333,6 +349,13 @@ bool ReadPassword(bool writePass = true)
       {
         ++globalState; //Завершили игру Поражение
       }
+      else
+      {
+        if (audioConnected)
+        {
+          audio.play(3);
+        }
+      }
 
       if (setupGame[0] > 600)
       {
@@ -347,10 +370,7 @@ bool ReadPassword(bool writePass = true)
       stringLength = 0;
       lcd.setCursor(0, 1);
       lcd.print(F("Pass:  00000000 "));
-      if (audioConnected)
-      {
-        audio.play(3);
-      }
+
     }
     else
     {
@@ -494,7 +514,7 @@ void CheckAccel()
     speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
-    if (audioConnected && ((millis() - playAccel) > 1000))
+    if (audioConnected && ((millis() - playAccel) > 2000))
     {
       audio.play(2);
       playAccel = millis();

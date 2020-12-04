@@ -51,7 +51,7 @@ bool speedAccel = false;
 int acsselButton;
 unsigned long playAccel;
 
-//Плеер 
+//Плеер
 DFRobotDFPlayerMini audio{};
 #define AUDIO_VOLUME 30 // min = 0, max = 30
 uint8_t audioConnected = 0;
@@ -88,7 +88,7 @@ uint8_t cursorOneStr = 0;   //Курсор первой строки
 
 
 /*********** LED ****************/
-long timeLed;     
+long timeLed;
 uint8_t indexLed = 0;
 uint8_t sw = 0; //Позиция яркой капли
 
