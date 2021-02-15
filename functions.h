@@ -427,8 +427,11 @@ bool BluetoothSerch()
     String s = ReadFromStream(Serial2);
 
     int pos = s.indexOf("=") + 1;
-    if (!pos || ((millis() - startBluetoothtMillis) < 3000))
+    if (!pos)return false;
+
+    if ((millis() - startBluetoothtMillis) < 5000) {
       return false;
+    }
 
     String mac = ExtractSubstring(s, ',', pos);
     String rssi = ExtractSubstring(s, ',', pos + mac.length() + 1);
