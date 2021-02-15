@@ -1,4 +1,4 @@
-#define DEBUG_ENABLE 0
+#define DEBUG_ENABLE 1
 
 #ifdef DEBUG_ENABLE
 #define DEBUG(x) Serial.println(x)

@@ -223,6 +223,7 @@ void ButtonRead()
         if (audioConnected)
         {
           audio.play(33);
+          DEBUG("trek: 33");
         }
         globalState += 2;
         DEBUG("Button");
@@ -235,6 +236,7 @@ void ButtonRead()
         if (audioConnected)
         {
           audio.play(10);
+          DEBUG("trek: 10");
         }
       }
       else if (setupGame[7] == i) //Номер кнопки замедляющий отсчет
@@ -243,6 +245,7 @@ void ButtonRead()
         if (audioConnected)
         {
           audio.play(11);
+          DEBUG("trek: 11");
         }
       }
       else
@@ -258,6 +261,7 @@ void ButtonRead()
         if (audioConnected)
         {
           audio.play(9);
+          DEBUG("trek: 9");
         }
       }
       rele();
@@ -279,6 +283,7 @@ void ButtonRead()
     if (audioConnected)
     {
       audio.play(33);
+      DEBUG("trek: 33");
     }
     globalState += 2;
     DEBUG("Key");
@@ -335,14 +340,17 @@ bool ReadPassword(bool writePass = true)
         if (setupGame[2] == 3 && audioConnected)
         {
           audio.play(5);
+          DEBUG("trek: 5");
         }
         else if (setupGame[2] == 2 && audioConnected)
         {
           audio.play(6);
+          DEBUG("trek: 6");
         }
         else if (setupGame[2] == 1 && audioConnected)
         {
           audio.play(7);
+          DEBUG("trek: 7");
         }
       }
       else if (setupGame[2] == 0)
@@ -354,6 +362,7 @@ bool ReadPassword(bool writePass = true)
         if (audioConnected)
         {
           audio.play(3);
+          DEBUG("trek: 3");
         }
       }
 
@@ -379,6 +388,7 @@ bool ReadPassword(bool writePass = true)
       if (audioConnected)
       {
         audio.play(4);
+        DEBUG("trek: 4");
       }
     }
   }
@@ -453,6 +463,7 @@ bool BluetoothSerch()
         if (audioConnected)
         {
           audio.play(12);
+          DEBUG("trek: 12");
         }
       }
       timePass = millis();
@@ -470,6 +481,7 @@ bool BluetoothSerch()
         if (audioConnected)
         {
           audio.play(13);
+          DEBUG("trek: 13");
         }
       }
 
@@ -520,6 +532,7 @@ void CheckAccel()
     if (audioConnected && ((millis() - playAccel) > 2000))
     {
       audio.play(2);
+      DEBUG("trek: 2");
       playAccel = millis();
     }
   }

@@ -228,6 +228,7 @@ void ShowTimerGame()
   if (audioConnected)
   {
     audio.play(1);
+    DEBUG("trek: 1");
   }
 }
 
@@ -255,6 +256,7 @@ void GameWin()
   if (audioConnected)
   {
     audio.play(8);
+    DEBUG("trek: 8");
   }
   ++globalState;
 }
