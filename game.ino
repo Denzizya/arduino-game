@@ -6,7 +6,7 @@
 void setup()
 {
 #ifdef DEBUG_ENABLE
-  Serial.begin(115200);
+  Serial.begin(9600);
 #endif
 
   Serial1.begin(9600); //Плеер
@@ -48,22 +48,24 @@ void setup()
   showHello();  //Запуск меню приветствия.
 
   //Плеер
-  audio.setTimeOut(1000);
-  if (!audio.begin(Serial1)) {
+  audio.begin(Serial1);
+  if (!audio.available()) {
     audioConnected = 0;
     lcd.clear();
     lcd.setCursor(2, 0);
     lcd.print("Audio failed");
     lcd.setCursor(0, 1);
     lcd.print("Check wires/card");
+    while (true);
     delay(3000);
-  } else {
-    audio.setTimeOut(5000);
-    delay(1000);
-    audioConnected = 1;
-    audio.volume(AUDIO_VOLUME);
-    delay(1000);
   }
+  audio.setTimeOut(500);
+  audioConnected = 1;
+  audio.volume(AUDIO_VOLUME);
+  audio.EQ(DFPLAYER_EQ_NORMAL);
+  audio.outputDevice(DFPLAYER_DEVICE_SD);
+  audio.enableDAC();
+  delay(500);
 
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
