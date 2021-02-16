@@ -1,3 +1,12 @@
+//Воспроизведение треков
+void PlaySound(byte number)
+{
+  if (!audioConnected)
+    return;
+  //audio.play(number);
+  audio.playMp3Folder(number);
+}
+
 //Определение кнопки
 class WireSensor {
   public:
@@ -83,110 +92,107 @@ String ConstructTimeString(unsigned long secs)
   uint8_t minutes = secs / 60 - hours * 60;
   uint8_t seconds = secs % 60;
 
-  if (audioConnected)
+  if (hours == 1 && minutes == 0 && seconds == 0 && !timeMin60)
   {
-    if (hours == 1 && minutes == 0 && seconds == 0 && !timeMin60)
-    {
-      audio.play(16);
-      timeMin60 = true;
-      DEBUG("60 min -> trek: 16");
-    }
-    else if (hours == 0 && minutes == 50 && seconds == 0 && !timeMin50)
-    {
-      audio.play(17);
-      timeMin50 = true;
-      DEBUG("50 min -> trek: 17");
-    }
-    else if (hours == 0 && minutes == 40 && seconds == 0 && !timeMin40)
-    {
-      audio.play(18);
-      bool timeMin40 = true;
-      DEBUG("40 min -> trek: 18");
-    }
-    else if (hours == 0 && minutes == 30 && seconds == 0 && !timeMin30)
-    {
-      audio.play(19);
-      bool timeMin30 = true;
-      DEBUG("30 min -> trek: 19");
-    }
-    else if (hours == 0 && minutes == 20 && seconds == 0 && !timeMin20)
-    {
-      audio.play(20);
-      bool timeMin20 = true;
-      DEBUG("20 min -> trek: 20");
-    }
-    else if (hours == 0 && minutes == 15 && seconds == 0 && !timeMin15)
-    {
-      audio.play(21);
-      bool timeMin15 = true;
-      DEBUG("15 min -> trek: 21");
-    }
-    else if (hours == 0 && minutes == 10 && seconds == 0 && !timeMin10)
-    {
-      audio.play(22);
-      bool timeMin10 = true;
-      DEBUG("10 min -> trek: 22");
-    }
-    else if (hours == 0 && minutes == 5 && seconds == 0 && !timeMin5)
-    {
-      audio.play(23);
-      bool timeMin5 = true;
-      DEBUG("5 min -> trek: 23");
-    }
-    else if (hours == 0 && minutes == 4 && seconds == 0 && !timeMin4)
-    {
-      audio.play(24);
-      bool timeMin4 = true;
-      DEBUG("4 min -> trek: 24");
-    }
-    else if (hours == 0 && minutes == 3 && seconds == 0 && !timeMin3)
-    {
-      audio.play(25);
-      bool timeMin3 = true;
-      DEBUG("3 min -> trek: 25");
-    }
-    else if (hours == 0 && minutes == 2 && seconds == 0 && !timeMin2)
-    {
-      audio.play(26);
-      bool timeMin2 = true;
-      DEBUG("2 min -> trek: 26");
-    }
-    else if (hours == 0 && minutes == 1 && seconds == 0 && !timeMin1)
-    {
-      audio.play(27);
-      bool timeMin1 = true;
-      DEBUG("1 min -> trek: 27");
-    }
-    else if (hours == 0 && minutes == 0 && seconds == 30 && !timeSec30)
-    {
-      audio.play(28);
-      bool timeSec30 = true;
-      DEBUG("30 sec -> trek: 28");
-    }
-    else if (hours == 0 && minutes == 0 && seconds == 20 && !timeSec20)
-    {
-      audio.play(29);
-      bool timeSec20 = true;
-      DEBUG("20 sec -> trek: 29");
-    }
-    else if (hours == 0 && minutes == 0 && seconds == 15 && !timeSec15)
-    {
-      audio.play(30);
-      bool timeSec15 = true;
-      DEBUG("15 sec -> trek: 30");
-    }
-    else if (hours == 0 && minutes == 0 && seconds == 10 && !timeSec10)
-    {
-      audio.play(31);
-      bool timeSec10 = true;
-      DEBUG("10 sec -> trek: 31");
-    }
-    else if (hours == 0 && minutes == 0 && seconds == 5 && !timeSec5)
-    {
-      audio.play(32);
-      bool timeSec5 = true;
-      DEBUG("5 sec -> trek: 32");
-    }
+    PlaySound(TREK16);
+    timeMin60 = true;
+    DEBUG("60 min -> trek: 16");
+  }
+  else if (hours == 0 && minutes == 50 && seconds == 0 && !timeMin50)
+  {
+    PlaySound(TREK17);
+    timeMin50 = true;
+    DEBUG("50 min -> trek: 17");
+  }
+  else if (hours == 0 && minutes == 40 && seconds == 0 && !timeMin40)
+  {
+    PlaySound(TREK18);
+    bool timeMin40 = true;
+    DEBUG("40 min -> trek: 18");
+  }
+  else if (hours == 0 && minutes == 30 && seconds == 0 && !timeMin30)
+  {
+    PlaySound(TREK19);
+    bool timeMin30 = true;
+    DEBUG("30 min -> trek: 19");
+  }
+  else if (hours == 0 && minutes == 20 && seconds == 0 && !timeMin20)
+  {
+    PlaySound(TREK20);
+    bool timeMin20 = true;
+    DEBUG("20 min -> trek: 20");
+  }
+  else if (hours == 0 && minutes == 15 && seconds == 0 && !timeMin15)
+  {
+    PlaySound(TREK21);
+    bool timeMin15 = true;
+    DEBUG("15 min -> trek: 21");
+  }
+  else if (hours == 0 && minutes == 10 && seconds == 0 && !timeMin10)
+  {
+    PlaySound(TREK22);
+    bool timeMin10 = true;
+    DEBUG("10 min -> trek: 22");
+  }
+  else if (hours == 0 && minutes == 5 && seconds == 0 && !timeMin5)
+  {
+    PlaySound(TREK23);
+    bool timeMin5 = true;
+    DEBUG("5 min -> trek: 23");
+  }
+  else if (hours == 0 && minutes == 4 && seconds == 0 && !timeMin4)
+  {
+    PlaySound(TREK24);
+    bool timeMin4 = true;
+    DEBUG("4 min -> trek: 24");
+  }
+  else if (hours == 0 && minutes == 3 && seconds == 0 && !timeMin3)
+  {
+    PlaySound(TREK25);
+    bool timeMin3 = true;
+    DEBUG("3 min -> trek: 25");
+  }
+  else if (hours == 0 && minutes == 2 && seconds == 0 && !timeMin2)
+  {
+    PlaySound(TREK26);
+    bool timeMin2 = true;
+    DEBUG("2 min -> trek: 26");
+  }
+  else if (hours == 0 && minutes == 1 && seconds == 0 && !timeMin1)
+  {
+    PlaySound(TREK27);
+    bool timeMin1 = true;
+    DEBUG("1 min -> trek: 27");
+  }
+  else if (hours == 0 && minutes == 0 && seconds == 30 && !timeSec30)
+  {
+    PlaySound(TREK28);
+    bool timeSec30 = true;
+    DEBUG("30 sec -> trek: 28");
+  }
+  else if (hours == 0 && minutes == 0 && seconds == 20 && !timeSec20)
+  {
+    PlaySound(TREK29);
+    bool timeSec20 = true;
+    DEBUG("20 sec -> trek: 29");
+  }
+  else if (hours == 0 && minutes == 0 && seconds == 15 && !timeSec15)
+  {
+    PlaySound(TREK30);
+    bool timeSec15 = true;
+    DEBUG("15 sec -> trek: 30");
+  }
+  else if (hours == 0 && minutes == 0 && seconds == 10 && !timeSec10)
+  {
+    PlaySound(TREK31);
+    bool timeSec10 = true;
+    DEBUG("10 sec -> trek: 31");
+  }
+  else if (hours == 0 && minutes == 0 && seconds == 5 && !timeSec5)
+  {
+    PlaySound(TREK32);
+    bool timeSec5 = true;
+    DEBUG("5 sec -> trek: 32");
   }
 
   char str[9];
@@ -220,35 +226,26 @@ void ButtonRead()
     {
       if (setupGame[3] == i)  //Номер кнопки которая остановит игру с победой.
       {
-        if (audioConnected)
-        {
-          audio.play(33);
-          DEBUG("trek: 33");
-        }
+        PlaySound(TREK33);
+        DEBUG("trek: 33");
         globalState += 2;
         DEBUG("Button");
       }
-      else if (setupGame[5] == i)   //Номер кнопки которая остановит отсчет на определеное время.
+      else if (setupGame[5] == i) //Номер кнопки которая остановит отсчет на определеное время.
       {
         long stopTime = (setupGame[6] * 60) * 1000;
         speedTime = stopTime;
         setupGame[5] = 20;
-        if (audioConnected)
-        {
-          audio.play(10);
-          DEBUG("trek: 10");
-        }
+        PlaySound(TREK10);
+        DEBUG("trek: 10");
       }
       else if (setupGame[7] == i) //Номер кнопки замедляющий отсчет
       {
         speedTime *= setupGame[8];
-        if (audioConnected)
-        {
-          audio.play(11);
-          DEBUG("trek: 11");
-        }
+        PlaySound(TREK11);
+        DEBUG("trek: 11");
       }
-      else
+      else  //Отнимаем определенное количество времени
       {
         if (setupGame[0] >  setupGame[4])
         {
@@ -258,11 +255,8 @@ void ButtonRead()
         {
           setupGame[0] = 0;
         }
-        if (audioConnected)
-        {
-          audio.play(9);
-          DEBUG("trek: 9");
-        }
+        PlaySound(TREK9);
+        DEBUG("trek: 9");
       }
       rele();
       w.MarkProcessed();
@@ -278,13 +272,10 @@ void ButtonRead()
     acsselButton = setupGame[10];
   }
 
-  if (wires[12].Value()) //Ключь
+  if (wires[12].Value()) //Ключ
   {
-    if (audioConnected)
-    {
-      audio.play(33);
-      DEBUG("trek: 33");
-    }
+    PlaySound(TREK33);
+    DEBUG("trek: 33");
     globalState += 2;
     DEBUG("Key");
   }
@@ -337,19 +328,19 @@ bool ReadPassword(bool writePass = true)
       if (setupGame[2] > 0 && setupGame[2] < 11)
       {
         --setupGame[2];
-        if (setupGame[2] == 3 && audioConnected)
+        if (setupGame[2] == 3)  //3 попытки ввода пароля
         {
-          audio.play(5);
+          PlaySound(TREK5);
           DEBUG("trek: 5");
         }
-        else if (setupGame[2] == 2 && audioConnected)
+        else if (setupGame[2] == 2) //2 попытки ввода пароля
         {
-          audio.play(6);
+          PlaySound(TREK6);
           DEBUG("trek: 6");
         }
-        else if (setupGame[2] == 1 && audioConnected)
+        else if (setupGame[2] == 1) //1 попытки ввода пароля
         {
-          audio.play(7);
+          PlaySound(TREK7);
           DEBUG("trek: 7");
         }
       }
@@ -359,11 +350,8 @@ bool ReadPassword(bool writePass = true)
       }
       else
       {
-        if (audioConnected)
-        {
-          audio.play(3);
-          DEBUG("trek: 3");
-        }
+        PlaySound(TREK3);
+        DEBUG("trek: 3");
       }
 
       if (setupGame[0] > 600)
@@ -385,11 +373,8 @@ bool ReadPassword(bool writePass = true)
     {
       globalState += 2; //Завершили игру Победа
       DEBUG("Password");
-      if (audioConnected)
-      {
-        audio.play(4);
-        DEBUG("trek: 4");
-      }
+      PlaySound(TREK4);
+      DEBUG("trek: 4");
     }
   }
 }
@@ -424,22 +409,25 @@ String ExtractSubstring(const String & s, char separator, unsigned int startIdx)
 //Поиск устройств
 bool BluetoothSerch()
 {
+  DEBUG("BluetoothSerch1");
   if ((millis() - timeScan) > SCAN_DELAY_MS)
   {
     Serial2.print(F("AT+SCAN1"));
+    DEBUG("BluetoothSerch2");
     timeScan = millis();
     timeReadScan = millis();
   }
 
   if ((millis() - timeReadScan) > 10)
   {
+    DEBUG("BluetoothSerch3");
     timeReadScan = millis();
     String s = ReadFromStream(Serial2);
 
     int pos = s.indexOf("=") + 1;
     if (!pos)return false;
 
-    if ((millis() - startBluetoothtMillis) < 5000) {
+    if ((millis() - startBluetoothtMillis) < 3000) {
       return false;
     }
 
@@ -455,16 +443,13 @@ bool BluetoothSerch()
 
     if (name == VALID_NAME && (int)&rssi > MIN_VALID_RSSI)
     {
-      if (!ViewSetupPass)
+      if (!ViewSetupPass) //Ввод пароля блютуз
       {
         lcd.setCursor(0, 1);
         lcd.print(F("Pass:  00000000 "));
         ViewSetupPass = true;
-        if (audioConnected)
-        {
-          audio.play(12);
-          DEBUG("trek: 12");
-        }
+        PlaySound(TREK12);
+        DEBUG("trek: 12");
       }
       timePass = millis();
       return true;
@@ -472,25 +457,21 @@ bool BluetoothSerch()
 
     if (name == VALID_NAME_NETRAL && (int)&rssi > MIN_VALID_RSSI)
     {
-      if (!ViewMenuPass)
+      if (!ViewMenuPass)  //Вывод пароля блютуз
       {
         lcd.setCursor(0, 1);
         lcd.print(F("Pass:  00000000 "));
         lcd.setCursor(7, 1);
         lcd.print(setupGame[15]);
-        if (audioConnected)
-        {
-          audio.play(13);
-          DEBUG("trek: 13");
-        }
+        PlaySound(TREK13);
+        DEBUG("trek: 13");
       }
 
       ViewMenuPass = true;
       timePass = millis();
     }
-
-    return false;
   }
+  return false;
 }
 
 //===============================================================================
@@ -529,9 +510,9 @@ void CheckAccel()
     speedTime = (int)(speedTime / setupGame[11]); //Скорость отсчета
     speedAccel = true;
     timeAccel = millis();
-    if (audioConnected && ((millis() - playAccel) > 2000))
+    if ((millis() - playAccel) > 2000)
     {
-      audio.play(2);
+      PlaySound(TREK2);
       DEBUG("trek: 2");
       playAccel = millis();
     }

@@ -227,7 +227,7 @@ void ShowTimerGame()
   setupTimeLastMillis = millis();
   if (audioConnected)
   {
-    audio.play(1);
+    PlaySound(TREK1);
     DEBUG("trek: 1");
   }
 }
@@ -253,11 +253,8 @@ void GameWin()
 {
   lcd.setCursor(0, 1);
   lcd.print(F("Bomb Deactiva..."));
-  if (audioConnected)
-  {
-    audio.play(8);
-    DEBUG("trek: 8");
-  }
+  PlaySound(TREK8);
+  DEBUG("trek: 8");
   ++globalState;
 }
 

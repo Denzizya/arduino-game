@@ -1,5 +1,6 @@
 #include "libraries.h"
 #include "const.h"
+#include "play.h"
 #include "functions.h"
 #include "menu.h"
 
@@ -22,6 +23,7 @@ void setup()
 
   //Определение блютуз
   Serial2.begin(BLUETOOTH_BAUDRATE);
+  delay(100);
   Serial2.print("AT+HOSTEN1");
   delay(100);
   if (!ReadFromStream(Serial2).startsWith(F("+OK")))
@@ -48,8 +50,7 @@ void setup()
   showHello();  //Запуск меню приветствия.
 
   //Плеер
-  audio.begin(Serial1);
-  if (!audio.available()) {
+  if (!audio.begin(Serial1)) {
     audioConnected = 0;
     lcd.clear();
     lcd.setCursor(2, 0);
