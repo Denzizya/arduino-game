@@ -1,4 +1,4 @@
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
 
 #ifdef DEBUG_ENABLE
 #define DEBUG(x) Serial.println(x)
@@ -64,8 +64,8 @@ bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** RELE ***/
 #define RELAY_PINS 42
-#define ON  LOW
-#define OFF HIGH
+#define ON  HIGH
+#define OFF LOW
 #define RELAY_GAME_OVER A11
 
 /*** BUZZER ***/
