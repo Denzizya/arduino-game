@@ -41,7 +41,7 @@ void ShowAttempts()
   lcd.setCursor(cursorOneStr, 1);
 }
 
-//Номер кнопки останавливающей таймер ( 1-10 )
+//Номер кнопки останавливающей таймер ( 0-9 )
 void ShowCorrectToggle()
 {
   lcd.clear();
@@ -242,9 +242,9 @@ void GameOver()
   lcd.print(F("                "));
   lcd.setCursor(3, 1);
   lcd.print(F("Game Over!"));
-  digitalWrite(RELAY_GAME_OVER, ON);
+  digitalWrite(RELAY_GAME_OVER, HIGH);
   delay(30000);
-  digitalWrite(RELAY_GAME_OVER, OFF);
+  digitalWrite(RELAY_GAME_OVER, LOW);
   globalState += 2;
 }
 
@@ -409,14 +409,13 @@ void SetupAttempts()
   }
 }
 
-//Номер кнопки останавливающей таймер ( 1-10 )
 void SetupCorrectToggle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value()) {
+    if (w.Value() && i<10) {
       setupGame[globalState] = i;
-      lcd.setCursor(cursorOneStr, 1);
+      lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
       rele();
     }
@@ -472,9 +471,9 @@ void SetupStopToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value() && setupGame[3] != i) {
+    if (w.Value() && setupGame[3] != i  && i<10) {
       setupGame[globalState] = i;
-      lcd.setCursor(cursorOneStr, 1);
+      lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
       rele();
     }
@@ -539,9 +538,9 @@ void SetupSlomoToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value() && setupGame[3] != i && setupGame[5] != i) {
+    if (w.Value() && setupGame[3] != i && setupGame[5] != i  && i<10) {
       setupGame[globalState] = i;
-      lcd.setCursor(cursorOneStr, 1);
+      lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
       rele();
     }

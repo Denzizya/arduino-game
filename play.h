@@ -31,3 +31,4 @@
 #define TREK31 31   //10 sec
 #define TREK32 32   //5 sec
 #define TREK33 33   //Номер кнопки которая остановит игру с победой или ключ
+#define TREK34 34   //Начало игры

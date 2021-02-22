@@ -36,6 +36,7 @@ const uint8_t WIRE_PINS_COUNT_LED = sizeof(WIRE_PINS_LED) / sizeof(uint8_t);
 unsigned long startBluetoothtMillis;    //Задержка при старте
 unsigned long timeReadScan = millis();  //Перезапуск сканирования
 unsigned long timeScan = millis();      //Задержка на сканирование
+unsigned long timeWaitPlay = millis();      //Задержка на сканирование
 
 Keypad keypad(makeKeymap(KEYPAD_KEYS), KEYPAD_ROW_PINS, KEYPAD_COL_PINS, KEYPAD_ROWS, KEYPAD_COLS);
 
@@ -64,8 +65,8 @@ bool ViewSetupPass = false; //Вывод меню ввода пароля
 
 /*** RELE ***/
 #define RELAY_PINS 42
-#define ON  HIGH
-#define OFF LOW
+#define ON  LOW
+#define OFF HIGH
 #define RELAY_GAME_OVER A11
 
 /*** BUZZER ***/

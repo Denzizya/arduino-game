@@ -3,8 +3,11 @@ void PlaySound(byte number)
 {
   if (!audioConnected)
     return;
-  //audio.play(number);
+  //  if((millis() - timeWaitPlay) > 200)
+  //  {
   audio.playMp3Folder(number);
+  timeWaitPlay = millis();
+  //  }
 }
 
 //Определение кнопки

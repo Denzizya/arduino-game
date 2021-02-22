@@ -67,12 +67,14 @@ void setup()
   audio.outputDevice(DFPLAYER_DEVICE_SD);
   audio.enableDAC();
   delay(500);
+  
+  PlaySound(TREK34);
 
   //Реле
   pinMode(RELAY_PINS, OUTPUT);
   digitalWrite(RELAY_PINS, OFF);
   pinMode(RELAY_GAME_OVER, OUTPUT);
-  digitalWrite(RELAY_GAME_OVER, OFF);
+  digitalWrite(RELAY_GAME_OVER, LOW);
 
   //Buzzer
   pinMode(BUZZER_PIN, OUTPUT);
@@ -135,4 +137,5 @@ void loop()
     case 18: GameOver(); break;               //Конец игры Поражение
     case 19: GameWin(); break;                //Конец игры Победа
   }
+  delay(1);
 }
