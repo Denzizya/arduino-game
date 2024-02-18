@@ -413,7 +413,7 @@ void SetupCorrectToggle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value() && i<10) {
+    if (w.Value() && i < 10) {
       setupGame[globalState] = i;
       lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
@@ -471,7 +471,7 @@ void SetupStopToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value() && setupGame[3] != i  && i<10) {
+    if (w.Value() && setupGame[3] != i  && i < 10) {
       setupGame[globalState] = i;
       lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
@@ -538,7 +538,7 @@ void SetupSlomoToogle()
 {
   for (uint8_t i = 0; i < WIRE_PINS_COUNT_BUTTON; ++i) {
     auto &w = wires[i];
-    if (w.Value() && setupGame[3] != i && setupGame[5] != i  && i<10) {
+    if (w.Value() && setupGame[3] != i && setupGame[5] != i  && i < 10) {
       setupGame[globalState] = i;
       lcd.setCursor(7, 1);
       lcd.print(setupGame[globalState]);
@@ -797,12 +797,42 @@ void SetupPointMenu()
 
   if (key == '#')
   {
+    int cellEeprom = 0;
+    for (uint8_t i = 0; i < adress; ++i)
+    {
+      if (i == 0 || i == 1 || i == (adress - 1))
+      {
+        EEPROMWritelong(cellEeprom, setupGame[i]);
+        cellEeprom += 3;
+      }
+      else
+      {
+        EEPROM.write(cellEeprom, setupGame[i]);
+      }
+      ++cellEeprom;
+      delay(1);
+    }
     setupGame[globalState] = 0;
     globalState += 2;
     ShowAnyPress();
   }
   if (key == '*')
   {
+    int cellEeprom = 0;
+    for (uint8_t i = 0; i < adress; ++i)
+    {
+      if (i == 0 || i == 1 || i == (adress - 1))
+      {
+        EEPROMWritelong(cellEeprom, setupGame[i]);
+        cellEeprom += 3;
+      }
+      else
+      {
+        EEPROM.write(cellEeprom, setupGame[i]);
+      }
+      ++cellEeprom;
+      delay(1);
+    }
     setupGame[globalState] = 1;
     globalState += 2;
     ShowAnyPress();
@@ -843,22 +873,6 @@ void SetupAnyPress()
   }
 
   rele();
-
-  int cellEeprom = 0;
-  for (uint8_t i = 0; i < adress; ++i)
-  {
-    if (i == 0 || i == 1 || i == (adress - 1))
-    {
-      EEPROMWritelong(cellEeprom, setupGame[i]);
-      cellEeprom += 3;
-    }
-    else
-    {
-      EEPROM.write(cellEeprom, setupGame[i]);
-    }
-    ++cellEeprom;
-    delay(1);
-  }
 
   ++globalState;
   setupTimeLastMillis = millis();
